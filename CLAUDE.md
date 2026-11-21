@@ -1,3 +1,5 @@
+@AGENTS.md
+
 # PathwayAI – Project Context for AI Assistants
 
 > Use this file as context when working on any PathwayAI component. In the Claude Code repo, save it as `CLAUDE.md` in the root.
@@ -146,7 +148,7 @@ A factor goes in **Beta core** only if its data is already in the milestone 1 da
 - **LLM in the app:** the Claude API via the official TypeScript SDK (`@anthropic-ai/sdk`), called only from server-side routes. Start with Haiku for both stages; use Sonnet for Stage 2 only if summary quality needs it. Check the current Claude API docs for model IDs and structured-output syntax rather than relying on memory. Anthropic does not use API inputs or outputs for model training by default. Before any school pilot, arrange zero data retention with Anthropic.
 - **Security:** every external call runs server-side. Keys live in a gitignored `.env`; commit a blank `.env.example` (`ANTHROPIC_API_KEY`, `ONET_API_KEY`, `BLS_API_KEY`, `HUD_BEARER_TOKEN`). Turn on GitHub secret scanning and protect `main` with required pull-request reviews. Set a monthly spend limit on the Claude API account.
 - **Operations:** per-IP throttling, request length caps, `max_tokens` limits and billing alerts; no prompts or responses in logs; student text never goes into the system prompt.
-- **Front end and hosting:** not yet chosen (see Open Questions).
+- **Front end and hosting:** Next.js (App Router) + TypeScript + Tailwind, hosted on Vercel. The Claude API key is stored as a Vercel environment variable, never with a NEXT_PUBLIC_ prefix.
 
 ## Data Sources
 
@@ -288,7 +290,7 @@ All eight lead to the Class 9 demonstration, in this order. Owners can be reassi
 - [ ] How are the guide's strengths-and-growth and family prompts worded? Include them in the counselor review.
 - [ ] Should the Top 100 rank by total employment or by job growth?
 - [ ] What default or repayment threshold triggers a risk badge?
-- [ ] Which front-end framework and hosting will we use?
+- [x] ~~Which front-end framework and hosting will we use?~~ Decided 2026-11-21: Next.js + TypeScript + Tailwind on Vercel.
 - [ ] Which counselors will review, and does student testing need consent or review approval?
 - [ ] Confirm field names, release dates and licenses (Scorecard columns, PSEO, Anthropic Economic Index) at download.
 - [ ] Check the blueprint's figures against the original sources before quoting them in the demo, since it was drafted from AI-assisted research.
