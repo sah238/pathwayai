@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "schema_version": "1.3.0",
+    "schema_version": "1.3.1",
     "dataset": "PathwayAI Pilot 30 Occupations",
     "record_count": 30,
     "sources": [
@@ -13,7 +13,7 @@
       "O*NET 30.2 Work Values (last published release)"
     ],
     "geographic_scope": "State wage data limited to DC, MD and VA. National wages, projections and CIP routing are national benchmarks, retained for comparison.",
-    "revision_notes": "Removed state wage records outside DC/MD/VA. Added dmv_wage_coverage per occupation. v1.1.0 (2026-11-21): added field_sources, known_open_issues and per-record data_quality_flags; nulled cip_routing debt/earnings for 4 graduate-pathway careers; empty EMT work context lists set to null. v1.2.0 (2026-11-21): added work_values from O*NET 30.2; rebuilt cip_routing debt/earnings from the Scorecard Field of Study file at the required credential level (previous build pooled all credential levels); added cip4_families, credential_levels, n_programs_*, dmv_providers. v1.3.0 (2026-11-21): Linked Computer Science (CIP 11.07) programs to 15-1252 Software Developers, per the NCES CIP2020-SOC2018 crosswalk, and recomputed its national debt/earnings from the Field of Study file (debt $20,743 -> $20,500; 1-yr earnings $66,691 -> $69,615; 429/482 -> 784/861 programs). dmv_providers now lists only providers with at least one completer in the last two years (completers_2yr > 0) at the required credential level. Programs with null completer counts moved to new field dmv_providers_unconfirmed. Apprenticeship sponsors kept. Checked every DC/MD/VA wage row (83 rows) against BLS OEWS May 2025 state file: all match. Replaced the 19-3033 VA 'recheck' flag; added small-sample notes for DC 90th percentiles of 19-3033 and 29-1131. Apprenticeship records now carry the same fields as Title IV records (missing ones set to null), so one schema fits all 20 providers. Apprenticeships: SMART Local 100 ZIP 20746 (4725 Silver Hill Rd, Suitland) and VA added (Richmond and Norfolk training centers); Steamfitters 602 length set to 5 years; Mid-Atlantic Carpenters length set to 4 years and DC added (DC DOES list); a source_url added for all four sponsors. Scorecard data_vintage now names the data release (updated June 10, 2026) instead of the upload date.",
+    "revision_notes": "Removed state wage records outside DC/MD/VA. Added dmv_wage_coverage per occupation. v1.1.0 (2026-11-21): added field_sources, known_open_issues and per-record data_quality_flags; nulled cip_routing debt/earnings for 4 graduate-pathway careers; empty EMT work context lists set to null. v1.2.0 (2026-11-21): added work_values from O*NET 30.2; rebuilt cip_routing debt/earnings from the Scorecard Field of Study file at the required credential level (previous build pooled all credential levels); added cip4_families, credential_levels, n_programs_*, dmv_providers. v1.3.0 (2026-11-21): Linked Computer Science (CIP 11.07) programs to 15-1252 Software Developers, per the NCES CIP2020-SOC2018 crosswalk, and recomputed its national debt/earnings from the Field of Study file (debt $20,743 -> $20,500; 1-yr earnings $66,691 -> $69,615; 429/482 -> 784/861 programs). dmv_providers now lists only providers with at least one completer in the last two years (completers_2yr > 0) at the required credential level. Programs with null completer counts moved to new field dmv_providers_unconfirmed. Apprenticeship sponsors kept. Checked every DC/MD/VA wage row (83 rows) against BLS OEWS May 2025 state file: all match. Replaced the 19-3033 VA 'recheck' flag; added small-sample notes for DC 90th percentiles of 19-3033 and 29-1131. Apprenticeship records now carry the same fields as Title IV records (missing ones set to null), so one schema fits all 20 providers. Apprenticeships: SMART Local 100 ZIP 20746 (4725 Silver Hill Rd, Suitland) and VA added (Richmond and Norfolk training centers); Steamfitters 602 length set to 5 years; Mid-Atlantic Carpenters length set to 4 years and DC added (DC DOES list); a source_url added for all four sponsors. Scorecard data_vintage now names the data release (updated June 10, 2026) instead of the upload date. v1.3.1 (2026-11-21): added field_sources entries for cip_routing.cip4_families, cip_routing.credential_levels and cip_routing.aggregation_note; cip4_families now use dotted codes (46.03) to match institutions programs[].cip4.",
     "field_sources": {
       "soc_code": {
         "source": "U.S. BLS Employment Projections 2025-35",
@@ -204,6 +204,21 @@
         "source": "Computed: providers whose matching program has a null completers_2yr (not reported); not shown as local options until confirmed",
         "data_vintage": null,
         "source_url": null
+      },
+      "cip_routing.cip4_families": {
+        "source": "Computed in the PathwayAI data build: 4-digit CIP families (dotted, e.g. 46.03, same format as institutions programs[].cip4) from the NCES CIP 2020 to SOC 2018 crosswalk",
+        "data_vintage": "CIP 2020 / SOC 2018",
+        "source_url": "https://nces.ed.gov/ipeds/cipcode/post3.aspx?y=56"
+      },
+      "cip_routing.credential_levels": {
+        "source": "Computed in the PathwayAI data build: Scorecard credential level(s) matched to the career's typical entry education",
+        "data_vintage": null,
+        "source_url": null
+      },
+      "cip_routing.aggregation_note": {
+        "source": "Computed in the PathwayAI data build: describes how median_program_debt and median_1yr_earnings were aggregated from the Scorecard Field of Study file",
+        "data_vintage": null,
+        "source_url": null
       }
     },
     "known_open_issues": [
@@ -309,7 +324,7 @@
         "median_1yr_earnings": 44727,
         "aggregation_note": "National median of program-level medians (each program = one institution x 4-digit CIP x credential level; unweighted). Debt = DEBT_ALL_STGP_EVAL_MDN (federal Stafford + Grad PLUS, completers in the earnings cohort); earnings = EARN_MDN_1YR (completers working and not enrolled, 1 year after completion). PrivacySuppressed values excluded. Rounded to whole dollars.",
         "cip4_families": [
-          "4603"
+          "46.03"
         ],
         "credential_levels": [
           "Undergraduate certificate"
@@ -476,7 +491,7 @@
         "median_1yr_earnings": 41574,
         "aggregation_note": "National median of program-level medians (each program = one institution x 4-digit CIP x credential level; unweighted). Debt = DEBT_ALL_STGP_EVAL_MDN (federal Stafford + Grad PLUS, completers in the earnings cohort); earnings = EARN_MDN_1YR (completers working and not enrolled, 1 year after completion). PrivacySuppressed values excluded. Rounded to whole dollars.",
         "cip4_families": [
-          "4605"
+          "46.05"
         ],
         "credential_levels": [
           "Undergraduate certificate"
@@ -637,7 +652,7 @@
         "median_1yr_earnings": 35631,
         "aggregation_note": "National median of program-level medians (each program = one institution x 4-digit CIP x credential level; unweighted). Debt = DEBT_ALL_STGP_EVAL_MDN (federal Stafford + Grad PLUS, completers in the earnings cohort); earnings = EARN_MDN_1YR (completers working and not enrolled, 1 year after completion). PrivacySuppressed values excluded. Rounded to whole dollars.",
         "cip4_families": [
-          "4602"
+          "46.02"
         ],
         "credential_levels": [
           "Undergraduate certificate"
@@ -800,7 +815,7 @@
         "median_1yr_earnings": 42713,
         "aggregation_note": "National median of program-level medians (each program = one institution x 4-digit CIP x credential level; unweighted). Debt = DEBT_ALL_STGP_EVAL_MDN (federal Stafford + Grad PLUS, completers in the earnings cohort); earnings = EARN_MDN_1YR (completers working and not enrolled, 1 year after completion). PrivacySuppressed values excluded. Rounded to whole dollars.",
         "cip4_families": [
-          "4805"
+          "48.05"
         ],
         "credential_levels": [
           "Undergraduate certificate"
@@ -962,9 +977,9 @@
         "median_1yr_earnings": 36493,
         "aggregation_note": "National median of program-level medians (each program = one institution x 4-digit CIP x credential level; unweighted). Debt = DEBT_ALL_STGP_EVAL_MDN (federal Stafford + Grad PLUS, completers in the earnings cohort); earnings = EARN_MDN_1YR (completers working and not enrolled, 1 year after completion). PrivacySuppressed values excluded. Rounded to whole dollars.",
         "cip4_families": [
-          "1517",
-          "4604",
-          "4707"
+          "15.17",
+          "46.04",
+          "47.07"
         ],
         "credential_levels": [
           "Undergraduate certificate"
@@ -1131,8 +1146,8 @@
         "median_1yr_earnings": 60072,
         "aggregation_note": "National median of program-level medians (each program = one institution x 4-digit CIP x credential level; unweighted). Debt = DEBT_ALL_STGP_EVAL_MDN (federal Stafford + Grad PLUS, completers in the earnings cohort); earnings = EARN_MDN_1YR (completers working and not enrolled, 1 year after completion). PrivacySuppressed values excluded. Rounded to whole dollars.",
         "cip4_families": [
-          "4703",
-          "4707"
+          "47.03",
+          "47.07"
         ],
         "credential_levels": [
           "Undergraduate certificate"
@@ -1307,8 +1322,8 @@
         "median_1yr_earnings": 18553,
         "aggregation_note": "National median of program-level medians (each program = one institution x 4-digit CIP x credential level; unweighted). Debt = DEBT_ALL_STGP_EVAL_MDN (federal Stafford + Grad PLUS, completers in the earnings cohort); earnings = EARN_MDN_1YR (completers working and not enrolled, 1 year after completion). PrivacySuppressed values excluded. Rounded to whole dollars.",
         "cip4_families": [
-          "0105",
-          "3034"
+          "01.05",
+          "30.34"
         ],
         "credential_levels": [
           "Undergraduate certificate"
@@ -1477,7 +1492,7 @@
         "median_1yr_earnings": 31624,
         "aggregation_note": "National median of program-level medians (each program = one institution x 4-digit CIP x credential level; unweighted). Debt = DEBT_ALL_STGP_EVAL_MDN (federal Stafford + Grad PLUS, completers in the earnings cohort); earnings = EARN_MDN_1YR (completers working and not enrolled, 1 year after completion). PrivacySuppressed values excluded. Rounded to whole dollars.",
         "cip4_families": [
-          "1205"
+          "12.05"
         ],
         "credential_levels": [
           "Undergraduate certificate"
@@ -1642,7 +1657,7 @@
         "median_1yr_earnings": 31717,
         "aggregation_note": "National median of program-level medians (each program = one institution x 4-digit CIP x credential level; unweighted). Debt = DEBT_ALL_STGP_EVAL_MDN (federal Stafford + Grad PLUS, completers in the earnings cohort); earnings = EARN_MDN_1YR (completers working and not enrolled, 1 year after completion). PrivacySuppressed values excluded. Rounded to whole dollars.",
         "cip4_families": [
-          "5204"
+          "52.04"
         ],
         "credential_levels": [
           "Undergraduate certificate"
@@ -1818,9 +1833,9 @@
         "median_1yr_earnings": 59413,
         "aggregation_note": "National median of program-level medians (each program = one institution x 4-digit CIP x credential level; unweighted). Debt = DEBT_ALL_STGP_EVAL_MDN (federal Stafford + Grad PLUS, completers in the earnings cohort); earnings = EARN_MDN_1YR (completers working and not enrolled, 1 year after completion). PrivacySuppressed values excluded. Rounded to whole dollars.",
         "cip4_families": [
-          "1517",
-          "4703",
-          "4707"
+          "15.17",
+          "47.03",
+          "47.07"
         ],
         "credential_levels": [
           "Undergraduate certificate"
@@ -1971,8 +1986,8 @@
         "median_1yr_earnings": 51384,
         "aggregation_note": "National median of program-level medians (each program = one institution x 4-digit CIP x credential level; unweighted). Debt = DEBT_ALL_STGP_EVAL_MDN (federal Stafford + Grad PLUS, completers in the earnings cohort); earnings = EARN_MDN_1YR (completers working and not enrolled, 1 year after completion). PrivacySuppressed values excluded. Rounded to whole dollars.",
         "cip4_families": [
-          "0302",
-          "4302"
+          "03.02",
+          "43.02"
         ],
         "credential_levels": [
           "Undergraduate certificate"
@@ -2127,7 +2142,7 @@
         "median_1yr_earnings": 53392,
         "aggregation_note": "National median of program-level medians (each program = one institution x 4-digit CIP x credential level; unweighted). Debt = DEBT_ALL_STGP_EVAL_MDN (federal Stafford + Grad PLUS, completers in the earnings cohort); earnings = EARN_MDN_1YR (completers working and not enrolled, 1 year after completion). PrivacySuppressed values excluded. Rounded to whole dollars.",
         "cip4_families": [
-          "5109"
+          "51.09"
         ],
         "credential_levels": [
           "Undergraduate certificate"
@@ -2294,8 +2309,8 @@
         "median_1yr_earnings": 41929,
         "aggregation_note": "National median of program-level medians (each program = one institution x 4-digit CIP x credential level; unweighted). Debt = DEBT_ALL_STGP_EVAL_MDN (federal Stafford + Grad PLUS, completers in the earnings cohort); earnings = EARN_MDN_1YR (completers working and not enrolled, 1 year after completion). PrivacySuppressed values excluded. Rounded to whole dollars.",
         "cip4_families": [
-          "1508",
-          "4706"
+          "15.08",
+          "47.06"
         ],
         "credential_levels": [
           "Undergraduate certificate"
@@ -2461,7 +2476,7 @@
         "median_1yr_earnings": 38472,
         "aggregation_note": "National median of program-level medians (each program = one institution x 4-digit CIP x credential level; unweighted). Debt = DEBT_ALL_STGP_EVAL_MDN (federal Stafford + Grad PLUS, completers in the earnings cohort); earnings = EARN_MDN_1YR (completers working and not enrolled, 1 year after completion). PrivacySuppressed values excluded. Rounded to whole dollars.",
         "cip4_families": [
-          "0183"
+          "01.83"
         ],
         "credential_levels": [
           "Associate's"
@@ -2633,8 +2648,8 @@
         "median_1yr_earnings": 42339,
         "aggregation_note": "National median of program-level medians (each program = one institution x 4-digit CIP x credential level; unweighted). Debt = DEBT_ALL_STGP_EVAL_MDN (federal Stafford + Grad PLUS, completers in the earnings cohort); earnings = EARN_MDN_1YR (completers working and not enrolled, 1 year after completion). PrivacySuppressed values excluded. Rounded to whole dollars.",
         "cip4_families": [
-          "0301",
-          "1505"
+          "03.01",
+          "15.05"
         ],
         "credential_levels": [
           "Associate's"
@@ -2788,7 +2803,7 @@
         "median_1yr_earnings": 64849,
         "aggregation_note": "National median of program-level medians (each program = one institution x 4-digit CIP x credential level; unweighted). Debt = DEBT_ALL_STGP_EVAL_MDN (federal Stafford + Grad PLUS, completers in the earnings cohort); earnings = EARN_MDN_1YR (completers working and not enrolled, 1 year after completion). PrivacySuppressed values excluded. Rounded to whole dollars.",
         "cip4_families": [
-          "5106"
+          "51.06"
         ],
         "credential_levels": [
           "Associate's"
@@ -2959,8 +2974,8 @@
         "median_1yr_earnings": 58281,
         "aggregation_note": "National median of program-level medians (each program = one institution x 4-digit CIP x credential level; unweighted). Debt = DEBT_ALL_STGP_EVAL_MDN (federal Stafford + Grad PLUS, completers in the earnings cohort); earnings = EARN_MDN_1YR (completers working and not enrolled, 1 year after completion). PrivacySuppressed values excluded. Rounded to whole dollars.",
         "cip4_families": [
-          "1500",
-          "1503"
+          "15.00",
+          "15.03"
         ],
         "credential_levels": [
           "Associate's"
@@ -3134,7 +3149,7 @@
         "median_1yr_earnings": 80708,
         "aggregation_note": "National median of program-level medians (each program = one institution x 4-digit CIP x credential level; unweighted). Debt = DEBT_ALL_STGP_EVAL_MDN (federal Stafford + Grad PLUS, completers in the earnings cohort); earnings = EARN_MDN_1YR (completers working and not enrolled, 1 year after completion). PrivacySuppressed values excluded. Rounded to whole dollars.",
         "cip4_families": [
-          "5138"
+          "51.38"
         ],
         "credential_levels": [
           "Bachelor's"
@@ -3318,9 +3333,9 @@
         "median_1yr_earnings": 69615,
         "aggregation_note": "National median of program-level medians (each program = one institution x 4-digit CIP x credential level; unweighted). Debt = DEBT_ALL_STGP_EVAL_MDN (federal Stafford + Grad PLUS, completers in the earnings cohort); earnings = EARN_MDN_1YR (completers working and not enrolled, 1 year after completion). PrivacySuppressed values excluded. Rounded to whole dollars.",
         "cip4_families": [
-          "1101",
-          "1102",
-          "1107"
+          "11.01",
+          "11.02",
+          "11.07"
         ],
         "credential_levels": [
           "Bachelor's"
@@ -3486,9 +3501,9 @@
         "median_1yr_earnings": 68338,
         "aggregation_note": "National median of program-level medians (each program = one institution x 4-digit CIP x credential level; unweighted). Debt = DEBT_ALL_STGP_EVAL_MDN (federal Stafford + Grad PLUS, completers in the earnings cohort); earnings = EARN_MDN_1YR (completers working and not enrolled, 1 year after completion). PrivacySuppressed values excluded. Rounded to whole dollars.",
         "cip4_families": [
-          "1101",
-          "1107",
-          "1108"
+          "11.01",
+          "11.07",
+          "11.08"
         ],
         "credential_levels": [
           "Bachelor's"
@@ -3660,8 +3675,8 @@
         "median_1yr_earnings": 71780,
         "aggregation_note": "National median of program-level medians (each program = one institution x 4-digit CIP x credential level; unweighted). Debt = DEBT_ALL_STGP_EVAL_MDN (federal Stafford + Grad PLUS, completers in the earnings cohort); earnings = EARN_MDN_1YR (completers working and not enrolled, 1 year after completion). PrivacySuppressed values excluded. Rounded to whole dollars.",
         "cip4_families": [
-          "1408",
-          "1414"
+          "14.08",
+          "14.14"
         ],
         "credential_levels": [
           "Bachelor's"
@@ -3830,9 +3845,9 @@
         "median_1yr_earnings": 75796,
         "aggregation_note": "National median of program-level medians (each program = one institution x 4-digit CIP x credential level; unweighted). Debt = DEBT_ALL_STGP_EVAL_MDN (federal Stafford + Grad PLUS, completers in the earnings cohort); earnings = EARN_MDN_1YR (completers working and not enrolled, 1 year after completion). PrivacySuppressed values excluded. Rounded to whole dollars.",
         "cip4_families": [
-          "1411",
-          "1419",
-          "1441"
+          "14.11",
+          "14.19",
+          "14.41"
         ],
         "credential_levels": [
           "Bachelor's"
@@ -4015,8 +4030,8 @@
         "median_1yr_earnings": 33979,
         "aggregation_note": "National median of program-level medians (each program = one institution x 4-digit CIP x credential level; unweighted). Debt = DEBT_ALL_STGP_EVAL_MDN (federal Stafford + Grad PLUS, completers in the earnings cohort); earnings = EARN_MDN_1YR (completers working and not enrolled, 1 year after completion). PrivacySuppressed values excluded. Rounded to whole dollars.",
         "cip4_families": [
-          "0306",
-          "2607"
+          "03.06",
+          "26.07"
         ],
         "credential_levels": [
           "Bachelor's"
@@ -4186,9 +4201,9 @@
         "median_1yr_earnings": 58359,
         "aggregation_note": "National median of program-level medians (each program = one institution x 4-digit CIP x credential level; unweighted). Debt = DEBT_ALL_STGP_EVAL_MDN (federal Stafford + Grad PLUS, completers in the earnings cohort); earnings = EARN_MDN_1YR (completers working and not enrolled, 1 year after completion). PrivacySuppressed values excluded. Rounded to whole dollars.",
         "cip4_families": [
-          "3016",
-          "4304",
-          "5203"
+          "30.16",
+          "43.04",
+          "52.03"
         ],
         "credential_levels": [
           "Bachelor's"
@@ -4367,8 +4382,8 @@
         "median_1yr_earnings": 44402,
         "aggregation_note": "National median of program-level medians (each program = one institution x 4-digit CIP x credential level; unweighted). Debt = DEBT_ALL_STGP_EVAL_MDN (federal Stafford + Grad PLUS, completers in the earnings cohort); earnings = EARN_MDN_1YR (completers working and not enrolled, 1 year after completion). PrivacySuppressed values excluded. Rounded to whole dollars.",
         "cip4_families": [
-          "1302",
-          "1312"
+          "13.02",
+          "13.12"
         ],
         "credential_levels": [
           "Bachelor's"
@@ -4549,9 +4564,9 @@
         "median_1yr_earnings": 37726,
         "aggregation_note": "National median of program-level medians (each program = one institution x 4-digit CIP x credential level; unweighted). Debt = DEBT_ALL_STGP_EVAL_MDN (federal Stafford + Grad PLUS, completers in the earnings cohort); earnings = EARN_MDN_1YR (completers working and not enrolled, 1 year after completion). PrivacySuppressed values excluded. Rounded to whole dollars.",
         "cip4_families": [
-          "1108",
-          "5001",
-          "5004"
+          "11.08",
+          "50.01",
+          "50.04"
         ],
         "credential_levels": [
           "Bachelor's"
@@ -4727,7 +4742,7 @@
         "median_1yr_earnings": 107631,
         "aggregation_note": "National median of program-level medians (each program = one institution x 4-digit CIP x credential level; unweighted). Debt = DEBT_ALL_STGP_EVAL_MDN (federal Stafford + Grad PLUS, completers in the earnings cohort); earnings = EARN_MDN_1YR (completers working and not enrolled, 1 year after completion). PrivacySuppressed values excluded. Rounded to whole dollars.",
         "cip4_families": [
-          "5138"
+          "51.38"
         ],
         "credential_levels": [
           "Master's"
@@ -4912,8 +4927,8 @@
         "median_1yr_earnings": 113487,
         "aggregation_note": "National median of program-level medians (each program = one institution x 4-digit CIP x credential level; unweighted). Debt = DEBT_ALL_STGP_EVAL_MDN (federal Stafford + Grad PLUS, completers in the earnings cohort); earnings = EARN_MDN_1YR (completers working and not enrolled, 1 year after completion). PrivacySuppressed values excluded. Rounded to whole dollars.",
         "cip4_families": [
-          "5109",
-          "6009"
+          "51.09",
+          "60.09"
         ],
         "credential_levels": [
           "Master's"
@@ -5097,8 +5112,8 @@
         "median_1yr_earnings": 113030,
         "aggregation_note": "National median of program-level medians (each program = one institution x 4-digit CIP x credential level; unweighted). Debt = DEBT_ALL_STGP_EVAL_MDN (federal Stafford + Grad PLUS, completers in the earnings cohort); earnings = EARN_MDN_1YR (completers working and not enrolled, 1 year after completion). PrivacySuppressed values excluded. Rounded to whole dollars.",
         "cip4_families": [
-          "0180",
-          "0181"
+          "01.80",
+          "01.81"
         ],
         "credential_levels": [
           "Doctoral",
@@ -5278,9 +5293,9 @@
         "median_1yr_earnings": 78050,
         "aggregation_note": "National median of program-level medians (each program = one institution x 4-digit CIP x credential level; unweighted). Debt = DEBT_ALL_STGP_EVAL_MDN (federal Stafford + Grad PLUS, completers in the earnings cohort); earnings = EARN_MDN_1YR (completers working and not enrolled, 1 year after completion). PrivacySuppressed values excluded. Rounded to whole dollars.",
         "cip4_families": [
-          "4201",
-          "4227",
-          "4228"
+          "42.01",
+          "42.27",
+          "42.28"
         ],
         "credential_levels": [
           "Doctoral",

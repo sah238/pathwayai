@@ -31,3 +31,10 @@ Both files are now `schema_version` 1.3.0. Every change is also listed in each f
 ## Still open
 - Mid-Atlantic Carpenters' Virginia registration is not confirmed.
 - Curiosity (quiz Q4): deferred.
+
+---
+
+# v1.3.1 (2026-11-21)
+- Added `metadata.field_sources` entries for `cip_routing.cip4_families`, `cip_routing.credential_levels` and `cip_routing.aggregation_note` (the three audit warnings).
+- `cip_routing.cip4_families` now uses dotted codes (`"46.03"`), the same format as `programs[].cip4` in institutions.json, so the two join directly.
+- No other data changed. institutions.json version bumped to 1.3.1 to match.
