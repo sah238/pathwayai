@@ -201,8 +201,8 @@ export const OccupationSchema = z.strictObject({
     median_program_debt: num,
     median_1yr_earnings: num,
     aggregation_note: z.string(),
-    /** 4-digit CIP without the dot ("4603"); programs[].cip4 has it ("46.03"). */
-    cip4_families: z.array(z.string().regex(/^\d{4}$/)),
+    /** 4-digit CIP families, dotted ("46.03"); joins to institutions programs[].cip4. */
+    cip4_families: z.array(z.string().regex(/^\d{2}\.\d{2}$/)),
     credential_levels: z.array(CredentialLevelLabelSchema),
     n_programs_debt: int,
     n_programs_earnings: int,
