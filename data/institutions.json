@@ -1,0 +1,650 @@
+{
+  "metadata": {
+    "schema_version": "1.0.0",
+    "dataset": "PathwayAI Pilot Title IV Institutions",
+    "record_count": 20,
+    "source": "U.S. Dept. of Education College Scorecard (Nov 2026)"
+  },
+  "institutions": [
+    {
+      "unitid": 110635,
+      "opeid": 131200,
+      "name": "University of California-Berkeley",
+      "location": {
+        "city": "Berkeley",
+        "state": "CA",
+        "zip_raw": "94720",
+        "zip5": "94720"
+      },
+      "control": "Public",
+      "predominant_degree": "Bachelor’s",
+      "admissions": {
+        "admission_rate": 0.1098
+      },
+      "cost_and_net_price": {
+        "avg_net_price": 14538,
+        "net_price_tier1_0_30k": 5110,
+        "net_price_tier2_30_48k": 5391,
+        "net_price_tier3_48_75k": 9606,
+        "net_price_flag": "Standard net price"
+      },
+      "outcomes_and_debt": {
+        "completion_rate_150pct": 0.9368,
+        "retention_rate_ft": 0.9679,
+        "cohort_default_rate_3yr": 0.0,
+        "repayment_rate_3yr": 0.8017,
+        "median_grad_debt": 12416,
+        "median_earnings_6yr": 79931,
+        "median_earnings_10yr": 100212
+      }
+    },
+    {
+      "unitid": 110662,
+      "opeid": 131500,
+      "name": "University of California-Los Angeles",
+      "location": {
+        "city": "Los Angeles",
+        "state": "CA",
+        "zip_raw": "90095-1405",
+        "zip5": "90095"
+      },
+      "control": "Public",
+      "predominant_degree": "Bachelor’s",
+      "admissions": {
+        "admission_rate": 0.0897
+      },
+      "cost_and_net_price": {
+        "avg_net_price": 14659,
+        "net_price_tier1_0_30k": 7755,
+        "net_price_tier2_30_48k": 8643,
+        "net_price_tier3_48_75k": 10769,
+        "net_price_flag": "Standard net price"
+      },
+      "outcomes_and_debt": {
+        "completion_rate_150pct": 0.9284,
+        "retention_rate_ft": 0.9731,
+        "cohort_default_rate_3yr": 0.0,
+        "repayment_rate_3yr": 0.7863,
+        "median_grad_debt": 13750,
+        "median_earnings_6yr": 62171,
+        "median_earnings_10yr": 88581
+      }
+    },
+    {
+      "unitid": 122931,
+      "opeid": 132600,
+      "name": "Santa Clara University",
+      "location": {
+        "city": "Santa Clara",
+        "state": "CA",
+        "zip_raw": "95053",
+        "zip5": "95053"
+      },
+      "control": "Private Nonprofit",
+      "predominant_degree": "Bachelor’s",
+      "admissions": {
+        "admission_rate": 0.48
+      },
+      "cost_and_net_price": {
+        "avg_net_price": 36116,
+        "net_price_tier1_0_30k": 22696,
+        "net_price_tier2_30_48k": 13570,
+        "net_price_tier3_48_75k": 25352,
+        "net_price_flag": "Standard net price"
+      },
+      "outcomes_and_debt": {
+        "completion_rate_150pct": 0.8729,
+        "retention_rate_ft": 0.9392,
+        "cohort_default_rate_3yr": 0.0,
+        "repayment_rate_3yr": 0.8799,
+        "median_grad_debt": 19500,
+        "median_earnings_6yr": 96609,
+        "median_earnings_10yr": 117193
+      }
+    },
+    {
+      "unitid": 139959,
+      "opeid": 159800,
+      "name": "University of Georgia",
+      "location": {
+        "city": "Athens",
+        "state": "GA",
+        "zip_raw": "30602",
+        "zip5": "30602"
+      },
+      "control": "Public",
+      "predominant_degree": "Bachelor’s",
+      "admissions": {
+        "admission_rate": 0.377
+      },
+      "cost_and_net_price": {
+        "avg_net_price": 13636,
+        "net_price_tier1_0_30k": 8995,
+        "net_price_tier2_30_48k": 8715,
+        "net_price_tier3_48_75k": 11169,
+        "net_price_flag": "Standard net price"
+      },
+      "outcomes_and_debt": {
+        "completion_rate_150pct": 0.8907,
+        "retention_rate_ft": 0.9404,
+        "cohort_default_rate_3yr": 0.0,
+        "repayment_rate_3yr": 0.6802,
+        "median_grad_debt": 15623,
+        "median_earnings_6yr": 63403,
+        "median_earnings_10yr": 77246
+      }
+    },
+    {
+      "unitid": 145637,
+      "opeid": 177500,
+      "name": "University of Illinois Urbana-Champaign",
+      "location": {
+        "city": "Champaign",
+        "state": "IL",
+        "zip_raw": "61820-5711",
+        "zip5": "61820"
+      },
+      "control": "Public",
+      "predominant_degree": "Bachelor’s",
+      "admissions": {
+        "admission_rate": 0.4237
+      },
+      "cost_and_net_price": {
+        "avg_net_price": 13042,
+        "net_price_tier1_0_30k": 871,
+        "net_price_tier2_30_48k": 2983,
+        "net_price_tier3_48_75k": 5924,
+        "net_price_flag": "Standard net price"
+      },
+      "outcomes_and_debt": {
+        "completion_rate_150pct": 0.863,
+        "retention_rate_ft": 0.948,
+        "cohort_default_rate_3yr": 0.0,
+        "repayment_rate_3yr": 0.7885,
+        "median_grad_debt": 17750,
+        "median_earnings_6yr": 67794,
+        "median_earnings_10yr": 87599
+      }
+    },
+    {
+      "unitid": 162007,
+      "opeid": 206200,
+      "name": "Bowie State University",
+      "location": {
+        "city": "Bowie",
+        "state": "MD",
+        "zip_raw": "20715-9465",
+        "zip5": "20715"
+      },
+      "control": "Public",
+      "predominant_degree": "Bachelor’s",
+      "admissions": {
+        "admission_rate": 0.7241
+      },
+      "cost_and_net_price": {
+        "avg_net_price": 17835,
+        "net_price_tier1_0_30k": 15356,
+        "net_price_tier2_30_48k": 15516,
+        "net_price_tier3_48_75k": 16665,
+        "net_price_flag": "Standard net price"
+      },
+      "outcomes_and_debt": {
+        "completion_rate_150pct": 0.3658,
+        "retention_rate_ft": 0.6819,
+        "cohort_default_rate_3yr": 0.0,
+        "repayment_rate_3yr": 0.3061,
+        "median_grad_debt": 20550,
+        "median_earnings_6yr": 49180,
+        "median_earnings_10yr": 61890
+      }
+    },
+    {
+      "unitid": 162928,
+      "opeid": 207700,
+      "name": "Johns Hopkins University",
+      "location": {
+        "city": "Baltimore",
+        "state": "MD",
+        "zip_raw": "21218-2688",
+        "zip5": "21218"
+      },
+      "control": "Private Nonprofit",
+      "predominant_degree": "Bachelor’s",
+      "admissions": {
+        "admission_rate": 0.0644
+      },
+      "cost_and_net_price": {
+        "avg_net_price": 18431,
+        "net_price_tier1_0_30k": 1772,
+        "net_price_tier2_30_48k": 2136,
+        "net_price_tier3_48_75k": 4014,
+        "net_price_flag": "Standard net price"
+      },
+      "outcomes_and_debt": {
+        "completion_rate_150pct": 0.9343,
+        "retention_rate_ft": 0.9809,
+        "cohort_default_rate_3yr": 0.0,
+        "repayment_rate_3yr": 0.8223,
+        "median_grad_debt": 12000,
+        "median_earnings_6yr": 86265,
+        "median_earnings_10yr": 104590
+      }
+    },
+    {
+      "unitid": 163268,
+      "opeid": 210500,
+      "name": "University of Maryland-Baltimore County",
+      "location": {
+        "city": "Baltimore",
+        "state": "MD",
+        "zip_raw": "21250",
+        "zip5": "21250"
+      },
+      "control": "Public",
+      "predominant_degree": "Bachelor’s",
+      "admissions": {
+        "admission_rate": 0.7243
+      },
+      "cost_and_net_price": {
+        "avg_net_price": 25203,
+        "net_price_tier1_0_30k": 21797,
+        "net_price_tier2_30_48k": 21831,
+        "net_price_tier3_48_75k": 23232,
+        "net_price_flag": "Standard net price"
+      },
+      "outcomes_and_debt": {
+        "completion_rate_150pct": 0.6797,
+        "retention_rate_ft": 0.8505,
+        "cohort_default_rate_3yr": 0.0,
+        "repayment_rate_3yr": 0.6737,
+        "median_grad_debt": 18500,
+        "median_earnings_6yr": 60981,
+        "median_earnings_10yr": 74881
+      }
+    },
+    {
+      "unitid": 163286,
+      "opeid": 210300,
+      "name": "University of Maryland-College Park",
+      "location": {
+        "city": "College Park",
+        "state": "MD",
+        "zip_raw": "20742",
+        "zip5": "20742"
+      },
+      "control": "Public",
+      "predominant_degree": "Bachelor’s",
+      "admissions": {
+        "admission_rate": 0.4479
+      },
+      "cost_and_net_price": {
+        "avg_net_price": 14296,
+        "net_price_tier1_0_30k": 1141,
+        "net_price_tier2_30_48k": 5045,
+        "net_price_tier3_48_75k": 8768,
+        "net_price_flag": "Standard net price"
+      },
+      "outcomes_and_debt": {
+        "completion_rate_150pct": 0.8837,
+        "retention_rate_ft": 0.962,
+        "cohort_default_rate_3yr": 0.0,
+        "repayment_rate_3yr": 0.794,
+        "median_grad_debt": 16000,
+        "median_earnings_6yr": 74218,
+        "median_earnings_10yr": 89228
+      }
+    },
+    {
+      "unitid": 163426,
+      "opeid": 691100,
+      "name": "Montgomery College",
+      "location": {
+        "city": "Rockville",
+        "state": "MD",
+        "zip_raw": "20850",
+        "zip5": "20850"
+      },
+      "control": "Public",
+      "predominant_degree": "Associate",
+      "admissions": {
+        "admission_rate": null
+      },
+      "cost_and_net_price": {
+        "avg_net_price": 14317,
+        "net_price_tier1_0_30k": 13082,
+        "net_price_tier2_30_48k": 13427,
+        "net_price_tier3_48_75k": 14068,
+        "net_price_flag": "Standard net price"
+      },
+      "outcomes_and_debt": {
+        "completion_rate_150pct": 0.3524,
+        "retention_rate_ft": 0.7467,
+        "cohort_default_rate_3yr": 0.0,
+        "repayment_rate_3yr": 0.4696,
+        "median_grad_debt": 10500,
+        "median_earnings_6yr": 44563,
+        "median_earnings_10yr": 55378
+      }
+    },
+    {
+      "unitid": 170976,
+      "opeid": 232500,
+      "name": "University of Michigan-Ann Arbor",
+      "location": {
+        "city": "Ann Arbor",
+        "state": "MI",
+        "zip_raw": "48109",
+        "zip5": "48109"
+      },
+      "control": "Public",
+      "predominant_degree": "Bachelor’s",
+      "admissions": {
+        "admission_rate": 0.1564
+      },
+      "cost_and_net_price": {
+        "avg_net_price": 14362,
+        "net_price_tier1_0_30k": 3155,
+        "net_price_tier2_30_48k": 3372,
+        "net_price_tier3_48_75k": 5768,
+        "net_price_flag": "Standard net price"
+      },
+      "outcomes_and_debt": {
+        "completion_rate_150pct": 0.9319,
+        "retention_rate_ft": 0.9747,
+        "cohort_default_rate_3yr": 0.0,
+        "repayment_rate_3yr": 0.791,
+        "median_grad_debt": 18515,
+        "median_earnings_6yr": 80756,
+        "median_earnings_10yr": 92832
+      }
+    },
+    {
+      "unitid": 199120,
+      "opeid": 297400,
+      "name": "University of North Carolina at Chapel Hill",
+      "location": {
+        "city": "Chapel Hill",
+        "state": "NC",
+        "zip_raw": "27599",
+        "zip5": "27599"
+      },
+      "control": "Public",
+      "predominant_degree": "Bachelor’s",
+      "admissions": {
+        "admission_rate": 0.1534
+      },
+      "cost_and_net_price": {
+        "avg_net_price": 11305,
+        "net_price_tier1_0_30k": 2212,
+        "net_price_tier2_30_48k": 2989,
+        "net_price_tier3_48_75k": 6761,
+        "net_price_flag": "Standard net price"
+      },
+      "outcomes_and_debt": {
+        "completion_rate_150pct": 0.9111,
+        "retention_rate_ft": 0.9661,
+        "cohort_default_rate_3yr": 0.0,
+        "repayment_rate_3yr": 0.8061,
+        "median_grad_debt": 12086,
+        "median_earnings_6yr": 64397,
+        "median_earnings_10yr": 81094
+      }
+    },
+    {
+      "unitid": 199847,
+      "opeid": 297800,
+      "name": "Wake Forest University",
+      "location": {
+        "city": "Winston-Salem",
+        "state": "NC",
+        "zip_raw": "27106",
+        "zip5": "27106"
+      },
+      "control": "Private Nonprofit",
+      "predominant_degree": "Bachelor’s",
+      "admissions": {
+        "admission_rate": 0.2167
+      },
+      "cost_and_net_price": {
+        "avg_net_price": 28165,
+        "net_price_tier1_0_30k": 6242,
+        "net_price_tier2_30_48k": 6576,
+        "net_price_tier3_48_75k": 14876,
+        "net_price_flag": "Standard net price"
+      },
+      "outcomes_and_debt": {
+        "completion_rate_150pct": 0.9029,
+        "retention_rate_ft": 0.9256,
+        "cohort_default_rate_3yr": 0.0,
+        "repayment_rate_3yr": 0.8817,
+        "median_grad_debt": 19500,
+        "median_earnings_6yr": 78645,
+        "median_earnings_10yr": 104443
+      }
+    },
+    {
+      "unitid": 214777,
+      "opeid": 332900,
+      "name": "Pennsylvania State University-Main Campus",
+      "location": {
+        "city": "University Park",
+        "state": "PA",
+        "zip_raw": "16802-1503",
+        "zip5": "16802"
+      },
+      "control": "Public",
+      "predominant_degree": "Bachelor’s",
+      "admissions": {
+        "admission_rate": 0.6056
+      },
+      "cost_and_net_price": {
+        "avg_net_price": 33675,
+        "net_price_tier1_0_30k": 22193,
+        "net_price_tier2_30_48k": 21267,
+        "net_price_tier3_48_75k": 25458,
+        "net_price_flag": "Standard net price"
+      },
+      "outcomes_and_debt": {
+        "completion_rate_150pct": 0.8542,
+        "retention_rate_ft": 0.9264,
+        "cohort_default_rate_3yr": 0.0,
+        "repayment_rate_3yr": 0.6792,
+        "median_grad_debt": 24500,
+        "median_earnings_6yr": 60829,
+        "median_earnings_10yr": 71762
+      }
+    },
+    {
+      "unitid": 216524,
+      "opeid": 338500,
+      "name": "Ursinus College",
+      "location": {
+        "city": "Collegeville",
+        "state": "PA",
+        "zip_raw": "19426-1000",
+        "zip5": "19426"
+      },
+      "control": "Private Nonprofit",
+      "predominant_degree": "Bachelor’s",
+      "admissions": {
+        "admission_rate": 0.9177
+      },
+      "cost_and_net_price": {
+        "avg_net_price": 30181,
+        "net_price_tier1_0_30k": 21090,
+        "net_price_tier2_30_48k": 21031,
+        "net_price_tier3_48_75k": 25075,
+        "net_price_flag": "Standard net price"
+      },
+      "outcomes_and_debt": {
+        "completion_rate_150pct": 0.7256,
+        "retention_rate_ft": 0.8691,
+        "cohort_default_rate_3yr": 0.0,
+        "repayment_rate_3yr": 0.8269,
+        "median_grad_debt": 27000,
+        "median_earnings_6yr": 53806,
+        "median_earnings_10yr": 74571
+      }
+    },
+    {
+      "unitid": 228723,
+      "opeid": 363200,
+      "name": "Texas A&M University-College Station",
+      "location": {
+        "city": "College Station",
+        "state": "TX",
+        "zip_raw": "77843-1246",
+        "zip5": "77843"
+      },
+      "control": "Public",
+      "predominant_degree": "Bachelor’s",
+      "admissions": {
+        "admission_rate": 0.5743
+      },
+      "cost_and_net_price": {
+        "avg_net_price": 21527,
+        "net_price_tier1_0_30k": 13226,
+        "net_price_tier2_30_48k": 13602,
+        "net_price_tier3_48_75k": 16811,
+        "net_price_flag": "Standard net price"
+      },
+      "outcomes_and_debt": {
+        "completion_rate_150pct": 0.8453,
+        "retention_rate_ft": 0.9431,
+        "cohort_default_rate_3yr": 0.0,
+        "repayment_rate_3yr": 0.8173,
+        "median_grad_debt": 17350,
+        "median_earnings_6yr": 66167,
+        "median_earnings_10yr": 78159
+      }
+    },
+    {
+      "unitid": 228778,
+      "opeid": 365800,
+      "name": "The University of Texas at Austin",
+      "location": {
+        "city": "Austin",
+        "state": "TX",
+        "zip_raw": "78705",
+        "zip5": "78705"
+      },
+      "control": "Public",
+      "predominant_degree": "Bachelor’s",
+      "admissions": {
+        "admission_rate": 0.2664
+      },
+      "cost_and_net_price": {
+        "avg_net_price": 18554,
+        "net_price_tier1_0_30k": 8979,
+        "net_price_tier2_30_48k": 9324,
+        "net_price_tier3_48_75k": 12412,
+        "net_price_flag": "Standard net price"
+      },
+      "outcomes_and_debt": {
+        "completion_rate_150pct": 0.892,
+        "retention_rate_ft": 0.9674,
+        "cohort_default_rate_3yr": 0.0,
+        "repayment_rate_3yr": 0.7677,
+        "median_grad_debt": 19000,
+        "median_earnings_6yr": 64378,
+        "median_earnings_10yr": 81694
+      }
+    },
+    {
+      "unitid": 232982,
+      "opeid": 372800,
+      "name": "Old Dominion University",
+      "location": {
+        "city": "Norfolk",
+        "state": "VA",
+        "zip_raw": "23529",
+        "zip5": "23529"
+      },
+      "control": "Public",
+      "predominant_degree": "Bachelor’s",
+      "admissions": {
+        "admission_rate": 0.9036
+      },
+      "cost_and_net_price": {
+        "avg_net_price": 12913,
+        "net_price_tier1_0_30k": 8610,
+        "net_price_tier2_30_48k": 8652,
+        "net_price_tier3_48_75k": 9960,
+        "net_price_flag": "Standard net price"
+      },
+      "outcomes_and_debt": {
+        "completion_rate_150pct": 0.4309,
+        "retention_rate_ft": 0.7691,
+        "cohort_default_rate_3yr": 0.0,
+        "repayment_rate_3yr": 0.5244,
+        "median_grad_debt": 22956,
+        "median_earnings_6yr": 49587,
+        "median_earnings_10yr": 60482
+      }
+    },
+    {
+      "unitid": 233921,
+      "opeid": 375400,
+      "name": "Virginia Polytechnic Institute and State University",
+      "location": {
+        "city": "Blacksburg",
+        "state": "VA",
+        "zip_raw": "24061-0131",
+        "zip5": "24061"
+      },
+      "control": "Public",
+      "predominant_degree": "Bachelor’s",
+      "admissions": {
+        "admission_rate": 0.5478
+      },
+      "cost_and_net_price": {
+        "avg_net_price": 25808,
+        "net_price_tier1_0_30k": 11378,
+        "net_price_tier2_30_48k": 9464,
+        "net_price_tier3_48_75k": 15085,
+        "net_price_flag": "Standard net price"
+      },
+      "outcomes_and_debt": {
+        "completion_rate_150pct": 0.8587,
+        "retention_rate_ft": 0.9308,
+        "cohort_default_rate_3yr": 0.0,
+        "repayment_rate_3yr": 0.805,
+        "median_grad_debt": 20500,
+        "median_earnings_6yr": 71869,
+        "median_earnings_10yr": 88716
+      }
+    },
+    {
+      "unitid": 234076,
+      "opeid": 374500,
+      "name": "University of Virginia-Main Campus",
+      "location": {
+        "city": "Charlottesville",
+        "state": "VA",
+        "zip_raw": "22903-2628",
+        "zip5": "22903"
+      },
+      "control": "Public",
+      "predominant_degree": "Bachelor’s",
+      "admissions": {
+        "admission_rate": 0.1681
+      },
+      "cost_and_net_price": {
+        "avg_net_price": 18056,
+        "net_price_tier1_0_30k": 9479,
+        "net_price_tier2_30_48k": 8203,
+        "net_price_tier3_48_75k": 13391,
+        "net_price_flag": "Standard net price"
+      },
+      "outcomes_and_debt": {
+        "completion_rate_150pct": 0.9441,
+        "retention_rate_ft": 0.9755,
+        "cohort_default_rate_3yr": 0.0,
+        "repayment_rate_3yr": 0.8572,
+        "median_grad_debt": 15000,
+        "median_earnings_6yr": 80677,
+        "median_earnings_10yr": 96468
+      }
+    }
+  ]
+}

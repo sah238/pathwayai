@@ -1,0 +1,61 @@
+{
+  "profile_id": "student_05",
+  "metadata": {
+    "label": "Caleb Okafor (10th Grade - Silver Spring, MD)",
+    "pathway_archetype": "Constraint-Conflict Test Case",
+    "note": "Tests has_constraint_conflict (Surgeon + Start working right away) and Q1/Q9 contradiction (Surgeon + avoid blood_medical)"
+  },
+  "quiz_responses": {
+    "q1_dream_job": {
+      "has_dream_job": true,
+      "job": "Surgeon",
+      "because": "I want to save lives and make a really high salary.",
+      "workday_description": null
+    },
+    "q2_activities": [
+      "Run an experiment",
+      "Fix or build something",
+      "Help someone work through a problem"
+    ],
+    "q3_asked_for_help": "Helping younger kids on my track team stay calm and tape up minor sprains.",
+    "q4_values_most_least": {
+      "most_important": [
+        "See the results of my work",
+        "Get noticed and move up"
+      ],
+      "least_important": "Have a boss and company that support me"
+    },
+    "q5_job_pairs": {
+      "support_vs_independence": "You figure out your own way of doing things",
+      "recognition_vs_relationships": "Your work gets noticed and you can move up quickly, but it's competitive",
+      "working_conditions_vs_achievement": "A chance at big results, even if some projects don't work out"
+    },
+    "q6_work_setting": {
+      "indoors_outdoors": "Indoors",
+      "desk_moving": "On my feet and moving"
+    },
+    "q7_working_with_public": "Some of it",
+    "q8_schedule": {
+      "regularity": "No preference",
+      "weekly_hours": "More than 40 some weeks is fine"
+    },
+    "q9_avoid": {
+      "selected_flags": [
+        "blood_medical"
+      ],
+      "selected_chips": [
+        "Blood or medical procedures"
+      ],
+      "something_else": null
+    },
+    "q10_training": {
+      "max_education": "Start working right away",
+      "apprenticeship_interest": false,
+      "follow_up": null
+    },
+    "q11_zip_code": "20910"
+  },
+  "results_screen_optional": {
+    "family_income_tier": "Tier 3 ($48,001-$75,000)"
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "profile_id": "student_02",
+  "metadata": {
+    "label": "Maya Lin (12th Grade - Bethesda, MD)",
+    "pathway_archetype": "Healthcare / Direct Patient Care (4-Year or 2-Year+ Bridge)",
+    "note": "Stateless test fixture; no PII stored in app"
+  },
+  "quiz_responses": {
+    "q1_dream_job": {
+      "has_dream_job": true,
+      "job": "Pediatric Nurse",
+      "because": "I love working with kids and want a career where I'm actively helping people heal every single day.",
+      "workday_description": null
+    },
+    "q2_activities": [
+      "Help someone work through a problem",
+      "Teach someone a new skill",
+      "Run an experiment"
+    ],
+    "q3_asked_for_help": "Friends always come to me when they're stressed out or need someone to listen without judging.",
+    "q4_values_most_least": {
+      "most_important": [
+        "Help people and work with people I like",
+        "Good pay and steady work"
+      ],
+      "least_important": "Decide for myself how to do things"
+    },
+    "q5_job_pairs": {
+      "support_vs_independence": "Your manager gives you a clear plan to follow",
+      "recognition_vs_relationships": "Your team shares the credit and everyone backs each other up",
+      "working_conditions_vs_achievement": "Steady, predictable work, even if the tasks feel similar day to day"
+    },
+    "q6_work_setting": {
+      "indoors_outdoors": "Indoors",
+      "desk_moving": "On my feet and moving"
+    },
+    "q7_working_with_public": "Most of it",
+    "q8_schedule": {
+      "regularity": "Hours that change week to week, depending on what's needed",
+      "weekly_hours": "Usually 40 or less"
+    },
+    "q9_avoid": {
+      "selected_flags": [
+        "driving",
+        "computer"
+      ],
+      "selected_chips": [
+        "Driving most of the day",
+        "Being on a computer most of the day"
+      ],
+      "something_else": null
+    },
+    "q10_training": {
+      "max_education": "About 4 years",
+      "apprenticeship_interest": false,
+      "follow_up": null
+    },
+    "q11_zip_code": "20814"
+  },
+  "results_screen_optional": {
+    "family_income_tier": "Tier 4 ($75,001-$110,000)"
+  }
+}

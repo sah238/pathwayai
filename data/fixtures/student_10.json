@@ -1,0 +1,65 @@
+{
+  "profile_id": "student_10",
+  "metadata": {
+    "label": "Claire Miller (10th Grade - Frederick, MD)",
+    "pathway_archetype": "Environmental / Agricultural / Outdoors",
+    "note": "Stateless test fixture; tests Q10 follow-up and skipped optional family income"
+  },
+  "quiz_responses": {
+    "q1_dream_job": {
+      "has_dream_job": false,
+      "job": null,
+      "because": null,
+      "workday_description": "I'd spend the morning outside collecting water or soil samples in a state park, testing them in a lab after lunch, and writing up what we found."
+    },
+    "q2_activities": [
+      "Take care of an animal or a garden",
+      "Run an experiment",
+      "Figure out how something works"
+    ],
+    "q3_asked_for_help": "Taking care of neighbors' pets and plants when they go out of town.",
+    "q4_values_most_least": {
+      "most_important": [
+        "Keep learning new skills and discover things no one knows yet",
+        "Have a boss and company that support me"
+      ],
+      "least_important": "Get noticed and move up"
+    },
+    "q5_job_pairs": {
+      "support_vs_independence": "Your manager gives you a clear plan to follow",
+      "recognition_vs_relationships": "Your team shares the credit and everyone backs each other up",
+      "working_conditions_vs_achievement": "Steady, predictable work, even if the tasks feel similar day to day"
+    },
+    "q6_work_setting": {
+      "indoors_outdoors": "Outdoors",
+      "desk_moving": "On my feet and moving"
+    },
+    "q7_working_with_public": "Very little",
+    "q8_schedule": {
+      "regularity": "Busy during certain seasons, slower the rest of the year",
+      "weekly_hours": "Usually 40 or less"
+    },
+    "q9_avoid": {
+      "selected_flags": [
+        "sales",
+        "conflict",
+        "night_shifts"
+      ],
+      "selected_chips": [
+        "Selling things or meeting sales goals",
+        "Frequent arguments or conflict",
+        "Night shifts"
+      ],
+      "something_else": null
+    },
+    "q10_training": {
+      "max_education": "Not sure yet",
+      "apprenticeship_interest": false,
+      "follow_up": "Train longer for more options later"
+    },
+    "q11_zip_code": "21701"
+  },
+  "results_screen_optional": {
+    "family_income_tier": null
+  }
+}
