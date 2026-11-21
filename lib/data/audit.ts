@@ -120,7 +120,8 @@ export function checkSchema(occFile: unknown, instFile: unknown): Finding[] {
 // ---------------------------------------------------------------------------
 
 const isDmv = (s: string): s is DmvState => (DMV_STATES as readonly string[]).includes(s);
-const WAGE_FIELDS = ["employment", "wage_10th", "wage_25th", "median_wage", "wage_75th", "wage_90th"] as const;
+const WAGE_PERCENTILES = ["wage_10th", "wage_25th", "median_wage", "wage_75th", "wage_90th"] as const;
+const WAGE_FIELDS = ["employment", ...WAGE_PERCENTILES] as const;
 
 export function checkRegion(
   occs: Occupation[],
@@ -173,14 +174,18 @@ export function checkRegion(
       } else if (coverage !== "yes" && complete) {
         f("warn", OCC, occ.soc_code, path, `dmv_wage_coverage.${st} is "${coverage}" but the ${st} row is complete`);
       } else if (!complete) {
+        const wagesPresent = !!row && WAGE_PERCENTILES.every((k) => row[k] !== null);
         const what = row ? `${nullFields.join(", ")} null` : "no row";
+        const effect = wagesPresent
+          ? `Card shows ${st} wages; ${nullFields.join(", ")} not shown.`
+          : "Card falls back to national wages with a badge.";
         const flagged = isFlagged(occ.data_quality_flags, path);
         f(
           "known",
           OCC,
           occ.soc_code,
           path,
-          `${st}: ${what} (dmv_wage_coverage "${coverage}"${flagged ? "; data_quality_flag" : ""}). Card falls back to national wages with a badge.`,
+          `${st}: ${what} (dmv_wage_coverage "${coverage}"${flagged ? "; data_quality_flag" : ""}). ${effect}`,
         );
       }
     }
@@ -317,20 +322,26 @@ export function checkCardFields(
   const nat = (r: Occupation) =>
     Object.entries(r.national_wages_2025).every(([k, v]) => k === "geography_scope" || typeof v === "number");
   count("F3 Pay", "national wages (10/25/50/75/90)", occs, nat, soc, occ("national_wages_2025"));
-  const stateRows = occs.flatMap((o) => DMV_STATES.map((st) => ({ o, st })));
-  const fullRow = ({ o, st }: { o: Occupation; st: DmvState }) => {
-    const row = o.state_wages_2025[st];
-    return !!row && [row.wage_10th, row.wage_25th, row.median_wage, row.wage_90th].every((v) => v !== null);
-  };
-  const missingState = stateRows.filter((x) => !fullRow(x));
+  // Every occupation × DC/MD/VA pair falls in exactly one bucket.
+  const stateRows = occs.flatMap((o) => DMV_STATES.map((st) => ({ o, st, row: o.state_wages_2025[st] })));
+  const label = ({ o, st }: { o: Occupation; st: DmvState }) => `${o.soc_code} ${st}`;
+  const noRow = stateRows.filter((x) => !x.row);
+  const wagesNull = stateRows.filter((x) => x.row && WAGE_PERCENTILES.some((k) => x.row![k] === null));
+  const otherNull = stateRows.filter(
+    (x) => x.row && !wagesNull.includes(x) && WAGE_FIELDS.some((k) => x.row![k] === null),
+  );
+  const withWages = stateRows.length - noRow.length - wagesNull.length;
+  const gaps = [
+    noRow.length && `${noRow.length} no row: ${noRow.map(label).join(", ")}`,
+    wagesNull.length && `${wagesNull.length} wages null: ${wagesNull.map(label).join(", ")}`,
+    otherNull.length && `${otherNull.length} wages present, employment null: ${otherNull.map(label).join(", ")}`,
+  ].filter(Boolean);
   rows.push({
     factor: "F3 Pay",
     item: "DC/MD/VA state wage percentiles",
-    status: missingState.length ? "partial" : "present",
-    coverage: `${stateRows.length - missingState.length}/${stateRows.length} occupation×state`,
-    note: missingState.length
-      ? `known gap (dmv_wage_coverage; missing in BLS too): ${missingState.map(({ o, st }) => `${o.soc_code} ${st}`).join(", ")}`
-      : undefined,
+    status: withWages === stateRows.length ? "present" : withWages === 0 ? "absent" : "partial",
+    coverage: `${withWages}/${stateRows.length} occupation×state`,
+    note: gaps.length ? `known gap (dmv_wage_coverage). ${gaps.join("; ")}` : undefined,
   });
   rows.push({
     factor: "F3 Pay",

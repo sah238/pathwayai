@@ -86,6 +86,23 @@ describe("checkRegion", () => {
     expect(checkRegion([honest], [])[0]).toMatchObject({ severity: "known" });
   });
 
+  it("says state wages are still used when only employment is null", () => {
+    const o = occ();
+    o.state_wages_2025.VA!.employment = null;
+    o.dmv_wage_coverage.VA = "employment missing";
+    const [f] = checkRegion([o], []);
+    expect(f.message).toContain("Card shows VA wages; employment not shown.");
+    expect(f.message).not.toContain("national");
+  });
+
+  it("says the card falls back to national wages when percentiles are null", () => {
+    const o = occ();
+    const md = o.state_wages_2025.MD!;
+    Object.assign(md, { wage_10th: null, wage_25th: null, median_wage: null, wage_75th: null, wage_90th: null });
+    o.dmv_wage_coverage.MD = "wages suppressed";
+    expect(checkRegion([o], [])[0].message).toContain("falls back to national wages");
+  });
+
   it("reports an out-of-region fixture ZIP as info", () => {
     const fx = fixture({ most_important: [], least_important: "" }, "10001");
     expect(checkRegion([], [], [fx])).toEqual([expect.objectContaining({ severity: "info", file: "fixtures" })]);
@@ -127,6 +144,23 @@ describe("checkCardFields", () => {
     expect(rows.find((r) => r.item.startsWith("work_values ("))).toMatchObject({ status: "partial", coverage: "1/3" });
     const wv = findings.filter((f) => f.path === "work_values");
     expect(wv.map((f) => [f.record, f.severity])).toEqual([["00-0001", "known"], ["00-0002", "warn"]]);
+  });
+
+  it("splits DMV wage gaps into no row, wages null, and employment-only null", () => {
+    const noRow = occ();
+    delete noRow.state_wages_2025.DC;
+    const suppressed = occ();
+    suppressed.soc_code = "00-0003";
+    Object.assign(suppressed.state_wages_2025.MD!, { wage_10th: null, wage_25th: null, median_wage: null, wage_75th: null, wage_90th: null });
+    const empOnly = occ();
+    empOnly.soc_code = "00-0004";
+    empOnly.state_wages_2025.VA!.employment = null;
+    const { rows } = checkCardFields([noRow, suppressed, empOnly], [school()]);
+    const row = rows.find((r) => r.item === "DC/MD/VA state wage percentiles")!;
+    expect(row).toMatchObject({ status: "partial", coverage: "7/9 occupation×state" });
+    expect(row.note).toBe(
+      "known gap (dmv_wage_coverage). 1 no row: 47-2111 DC; 1 wages null: 00-0003 MD; 1 wages present, employment null: 00-0004 VA",
+    );
   });
 
   it("lists metro as deferred", () => {
