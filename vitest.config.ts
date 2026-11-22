@@ -11,6 +11,7 @@ export default defineConfig({
   },
   test: {
     environment: "node",
+    setupFiles: ["./tests/setup/block-network.ts"],
     include: ["**/*.test.ts"],
     exclude: ["node_modules/**", ".next/**", "data/build/**"],
   },
