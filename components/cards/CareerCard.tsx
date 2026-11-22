@@ -10,24 +10,12 @@ import {
 import type { IncomeTier, NetPriceResult } from "@/lib/calc/net-price";
 import type { WagePercentiles } from "@/lib/data/lookup";
 import { Badge } from "./Badge";
+import { ExpandPanel } from "./ExpandPanel";
+import { Factor } from "./Factor";
+import { STATE_NAMES, usd } from "./format";
 import { SourceNote } from "./SourceNote";
 
-const usd = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
-const STATE_NAMES = { DC: "DC", MD: "Maryland", VA: "Virginia" } as const;
 const VISIBLE_PROGRAMS = 3;
-
-/** One row of the glance layer. Cards share rows (subgrid) so factors line up side by side. */
-function Factor({ n, title, children }: { n: number; title: string; children: ReactNode }) {
-  return (
-    <section className="border-t border-zinc-200 p-4 dark:border-zinc-800 print:break-inside-avoid">
-      <h3 className="text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
-        <span aria-hidden="true">{n} · </span>
-        {title}
-      </h3>
-      <div className="mt-2 space-y-2 text-sm">{children}</div>
-    </section>
-  );
-}
 
 const PAY_ROWS: { key: keyof WagePercentiles; label: string }[] = [
   { key: "p10", label: "10th percentile" },
@@ -199,12 +187,23 @@ function Path({ card, zip, tier }: { card: CardViewModel; zip: ZipStatus; tier: 
   );
 }
 
-export function CareerCard({ card, zip, tier }: { card: CardViewModel; zip: ZipStatus; tier: IncomeTier | null }) {
+interface CareerCardProps {
+  card: CardViewModel;
+  zip: ZipStatus;
+  tier: IncomeTier | null;
+  /** Expand layer open for this card (one card at a time). */
+  open: boolean;
+  onToggle: () => void;
+}
+
+/** Glance layer (factors 1–4) plus the Expand toggle. Cards share rows (subgrid) so factors line up. */
+export function CareerCard({ card, zip, tier, open, onToggle }: CareerCardProps) {
   const wages = selectWages(card, zip);
+  const panelId = `expand-${card.soc}`;
   return (
     <article
       aria-labelledby={`card-${card.soc}`}
-      className="row-span-5 grid grid-rows-subgrid gap-0 overflow-hidden rounded-xl border border-zinc-300 bg-white dark:border-zinc-700 dark:bg-zinc-950"
+      className="row-span-6 grid grid-rows-subgrid gap-0 overflow-hidden rounded-xl border border-zinc-300 bg-white dark:border-zinc-700 dark:bg-zinc-950"
     >
       <header className="p-4">
         <h2 id={`card-${card.soc}`} className="text-xl font-semibold">
@@ -251,6 +250,23 @@ export function CareerCard({ card, zip, tier }: { card: CardViewModel; zip: ZipS
       <Factor n={4} title="Path to get there">
         <Path card={card} zip={zip} tier={tier} />
       </Factor>
+
+      <div className="border-t border-zinc-200 dark:border-zinc-800">
+        <button
+          type="button"
+          onClick={onToggle}
+          aria-expanded={open}
+          aria-controls={panelId}
+          className="flex w-full items-center justify-between gap-2 p-4 text-left text-sm font-semibold hover:bg-zinc-50 focus-visible:outline-2 focus-visible:outline-offset-[-2px] dark:hover:bg-zinc-900"
+        >
+          <span>
+            {open ? "Show less" : "What would it be like?"}
+            <span className="sr-only"> — {card.title.value}</span>
+          </span>
+          <span aria-hidden="true">{open ? "▲" : "▼"}</span>
+        </button>
+        {open && <ExpandPanel card={card} zip={zip} id={panelId} />}
+      </div>
     </article>
   );
 }

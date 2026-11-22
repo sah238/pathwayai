@@ -11,12 +11,12 @@ export const metadata: Metadata = {
 
 export default function ResultsPage(props: PageProps<"/results">) {
   return (
-    <main className="mx-auto w-full max-w-6xl px-4 py-6 sm:py-10">
-      <h1 className="text-2xl font-semibold sm:text-3xl">Three careers to explore</h1>
-      <p className="mt-2 max-w-2xl text-zinc-700 dark:text-zinc-300">
+    <main className="mx-auto w-full max-w-6xl px-4 py-6 sm:py-10 print:max-w-none print:p-0">
+      <h1 className="text-2xl font-semibold sm:text-3xl print:hidden">Three careers to explore</h1>
+      <p className="mt-2 max-w-2xl text-zinc-700 print:hidden dark:text-zinc-300">
         Compare them side by side. Every number comes from public federal data; tap &ldquo;Source&rdquo; to see where.
       </p>
-      <div className="mt-6">
+      <div className="mt-6 print:mt-0">
         <Suspense fallback={<p>Loading your cards…</p>}>
           <Results searchParams={props.searchParams} />
         </Suspense>

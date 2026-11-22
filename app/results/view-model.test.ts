@@ -182,3 +182,51 @@ describe("sources", () => {
     expect(va).toContainEqual(repo.occupationSource("state_wages_2025"));
   });
 });
+
+describe("expand layer", () => {
+  it("factor 8: EMT work environment is null, so the card gets the missing-data badge", () => {
+    const env = card("29-2042").expand.work_environment;
+    expect(env).toMatchObject({ status: "missing", badge: "Not yet loaded" });
+    expect(env.source).not.toBeNull();
+  });
+
+  it("factor 8: loaded labels come straight from work_profile.work_environment", () => {
+    const occ = repo.getOccupation("47-2111")!;
+    expect(card("47-2111").expand.work_environment).toMatchObject({
+      status: "loaded",
+      labels: occ.work_profile.work_environment,
+    });
+  });
+
+  it("factor 9: growth, openings and AI tier trace to projections_2025_2035", () => {
+    const p = repo.getOccupation("15-1252")!.projections_2025_2035;
+    const o = card("15-1252").expand.outlook;
+    expect(o).toMatchObject({
+      job_growth_pct: p.job_growth_pct,
+      job_change_k: p.job_change_k,
+      annual_openings_k: p.annual_openings_k,
+    });
+    expect(o.ai_exposure_tier.value).toBe("Very high");
+    expect(o.source).toEqual(repo.occupationSource("projections_2025_2035"));
+    expect(o.ai_exposure_tier.source).toEqual(repo.occupationSource("projections_2025_2035.ai_exposure_tier"));
+  });
+
+  it("factor 5: first step follows training_pathway", () => {
+    const c = card("47-2111").expand.could_i;
+    expect(c.first_step.pathway.value).toBe("Registered Apprenticeship");
+    expect(c.first_step.text).toMatch(/apprenticeship/);
+    expect(c.job_zone_label.source).not.toBeNull();
+  });
+
+  it("the banner adds expand sources only for the open card", () => {
+    const cards = DEMO.map(card);
+    const closed = sourcesOnScreen(cards, zipStatus(""), null, null);
+    const open = sourcesOnScreen(cards, zipStatus(""), null, "15-1252");
+    expect(closed.map((s) => s.source_url)).not.toContain(
+      "https://digitaleconomy.stanford.edu/publications/canaries-in-the-coal-mine/",
+    );
+    expect(open.map((s) => s.source_url)).toContain(
+      "https://digitaleconomy.stanford.edu/publications/canaries-in-the-coal-mine/",
+    );
+  });
+});

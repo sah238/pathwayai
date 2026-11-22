@@ -7,13 +7,13 @@
  */
 import { useId, useMemo, useState } from "react";
 import { CareerCard } from "@/components/cards/CareerCard";
+import { CounselorGuide } from "@/components/cards/CounselorGuide";
+import { STATE_NAMES } from "@/components/cards/format";
 import { GuaranteeNote } from "@/components/cards/GuaranteeNote";
 import { VintageBanner } from "@/components/cards/VintageBanner";
 import { INCOME_TIERS, type IncomeTier } from "@/lib/calc/net-price";
 import { sourcesOnScreen, zipStatus, type ZipStatus } from "./select";
 import type { CardViewModel } from "./view-model";
-
-const STATE_NAMES = { DC: "DC", MD: "Maryland", VA: "Virginia" } as const;
 const TIERS = Object.entries(INCOME_TIERS).map(([k, v]) => ({ tier: Number(k) as IncomeTier, label: v.label }));
 
 function zipMessage(status: ZipStatus): string {
@@ -36,10 +36,13 @@ export function ResultsClient({ cards }: { cards: CardViewModel[] }) {
   const tierId = useId();
   // Keyed on the ZIP string: zipStatus returns a new object each render.
   const status = useMemo(() => zipStatus(zip), [zip]);
-  const sources = useMemo(() => sourcesOnScreen(cards, status, tier), [cards, status, tier]);
+  // Expand layer: one card open at a time.
+  const [openSoc, setOpenSoc] = useState<string | null>(null);
+  const sources = useMemo(() => sourcesOnScreen(cards, status, tier, openSoc), [cards, status, tier, openSoc]);
 
   return (
-    <div className="space-y-6">
+    <>
+    <div className="space-y-6 print:hidden">
       <section
         aria-label="Personalize these cards"
         className="grid gap-4 rounded-xl border border-zinc-200 p-4 sm:grid-cols-2 dark:border-zinc-800"
@@ -88,12 +91,34 @@ export function ResultsClient({ cards }: { cards: CardViewModel[] }) {
 
       <div className="grid grid-cols-1 gap-x-4 gap-y-6 md:grid-cols-3 md:gap-y-0">
         {cards.map((card) => (
-          <CareerCard key={card.soc} card={card} zip={status} tier={tier} />
+          <CareerCard
+            key={card.soc}
+            card={card}
+            zip={status}
+            tier={tier}
+            open={openSoc === card.soc}
+            onToggle={() => setOpenSoc((cur) => (cur === card.soc ? null : card.soc))}
+          />
         ))}
+      </div>
+
+      <div className="flex flex-wrap items-center gap-3 rounded-xl border border-zinc-200 p-4 dark:border-zinc-800">
+        <button
+          type="button"
+          onClick={() => window.print()}
+          className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-semibold text-white hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
+        >
+          Print counselor guide
+        </button>
+        <p className="text-sm text-zinc-600 dark:text-zinc-400">
+          A one-page guide with your shortlist, questions to ask, and cost details. Printing happens on your device.
+        </p>
       </div>
 
       <GuaranteeNote />
       <VintageBanner sources={sources} />
     </div>
+    <CounselorGuide cards={cards} zip={status} tier={tier} />
+    </>
   );
 }

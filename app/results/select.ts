@@ -63,7 +63,13 @@ export function sortPrograms(programs: ProgramView[], status: ZipStatus): Progra
 }
 
 /** Every source behind a value on screen, deduplicated, for the vintage banner. */
-export function sourcesOnScreen(cards: CardViewModel[], status: ZipStatus, tier: IncomeTier | null): Source[] {
+export function sourcesOnScreen(
+  cards: CardViewModel[],
+  status: ZipStatus,
+  tier: IncomeTier | null,
+  /** The card whose Expand layer is open, if any. */
+  openSoc: string | null = null,
+): Source[] {
   const out = new Map<string, Source>();
   const add = (s: Source | null | undefined) => {
     if (s) out.set(`${s.source}|${s.data_vintage}|${s.source_url}`, s);
@@ -83,6 +89,15 @@ export function sourcesOnScreen(cards: CardViewModel[], status: ZipStatus, tier:
       add(p.program_source);
       add(p.program_length_years?.source);
       add(selectNetPrice(p, tier).source);
+    }
+    if (card.soc === openSoc) {
+      const { could_i, work_environment, outlook } = card.expand;
+      add(could_i.job_zone_label.source);
+      add(could_i.first_step.pathway.source);
+      add(work_environment.source);
+      add(outlook.source);
+      add(outlook.ai_exposure_tier.source);
+      add(outlook.early_career?.source);
     }
   }
   return [...out.values()];

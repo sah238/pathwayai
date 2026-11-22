@@ -14,6 +14,8 @@ import type { WageLookup, WagePercentiles } from "@/lib/data/lookup";
 import type { Source } from "@/lib/data/provenance";
 import type { DataRepository, InstitutionProgram } from "@/lib/data/repository";
 import type { Institution, Occupation } from "@/lib/data/schemas";
+import { earlyCareerFlag, type AiExposureTier, type EarlyCareerFlag } from "./early-career";
+import { FIRST_STEP_REVIEW_STATUS, FIRST_STEPS } from "./first-steps";
 
 export interface Sourced<T> {
   value: T;
@@ -87,6 +89,67 @@ export interface CardViewModel {
     programs: ProgramView[];
     /** Shown with NO_LOCAL_PROGRAM_BADGE when programs is empty. */
     national_route: Sourced<string[]>;
+  };
+  /** Expand layer, Beta core factors 5, 8 and 9. Factor 10 reads `wages` by ZIP in the browser. */
+  expand: ExpandView;
+}
+
+export const WORK_ENV_MISSING_BADGE = "Not yet loaded";
+
+export interface ExpandView {
+  /** Factor 5 · Could I do this? */
+  could_i: {
+    job_zone_label: Sourced<string>;
+    /** Fixed draft sentence keyed on training_pathway (source: the pathway field). */
+    first_step: { text: string; review_status: typeof FIRST_STEP_REVIEW_STATUS; pathway: Sourced<string> };
+  };
+  /** Factor 8 · Work environment. */
+  work_environment:
+    | { status: "loaded"; labels: string[]; source: Source | null }
+    | { status: "missing"; badge: typeof WORK_ENV_MISSING_BADGE; note: string | null; source: Source | null };
+  /** Factor 9 · Outlook and AI (national, BLS Projections 2025–35). */
+  outlook: {
+    job_growth_pct: number;
+    job_change_k: number;
+    annual_openings_k: number;
+    source: Source | null;
+    ai_exposure_tier: Sourced<AiExposureTier>;
+    /** From EARLY_CAREER_TABLE; null when the table says no. */
+    early_career: EarlyCareerFlag | null;
+  };
+}
+
+function expandView(repo: DataRepository, occ: Occupation): ExpandView {
+  const src = (path: string) => repo.occupationSource(path);
+  const edu = occ.education_and_training;
+  const proj = occ.projections_2025_2035;
+  const env = occ.work_profile.work_environment;
+  return {
+    could_i: {
+      job_zone_label: { value: edu.job_zone_label, source: src("education_and_training.job_zone_label") },
+      first_step: {
+        text: FIRST_STEPS[edu.training_pathway],
+        review_status: FIRST_STEP_REVIEW_STATUS,
+        pathway: { value: edu.training_pathway, source: src("education_and_training.training_pathway") },
+      },
+    },
+    work_environment:
+      env === null
+        ? {
+            status: "missing",
+            badge: WORK_ENV_MISSING_BADGE,
+            note: occ.data_quality_flags.find((f) => f.field.includes("work_profile.work_environment"))?.issue ?? null,
+            source: src("work_profile.work_environment"),
+          }
+        : { status: "loaded", labels: env, source: src("work_profile.work_environment") },
+    outlook: {
+      job_growth_pct: proj.job_growth_pct,
+      job_change_k: proj.job_change_k,
+      annual_openings_k: proj.annual_openings_k,
+      source: src("projections_2025_2035"),
+      ai_exposure_tier: { value: proj.ai_exposure_tier, source: src("projections_2025_2035.ai_exposure_tier") },
+      early_career: earlyCareerFlag(edu.entry_education, proj.ai_exposure_tier),
+    },
   };
 }
 
@@ -212,5 +275,6 @@ export function buildCardViewModel(repo: DataRepository, soc: string): CardViewM
         source: src("cip_routing.related_programs"),
       },
     },
+    expand: expandView(repo, occ),
   };
 }
