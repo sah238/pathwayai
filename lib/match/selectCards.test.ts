@@ -6,7 +6,7 @@ import { getRepository } from "@/lib/data/server";
 import { ExtractedFiltersSchema, type ExtractedFilters } from "@/lib/extract/schema";
 import { QuizResponsesSchema, type QuizResponses } from "@/lib/quiz/responses";
 import { AVOID_TABLE, avoidHits } from "./avoid";
-import { DREAM_JOB_ALIASES } from "./dream-jobs";
+import { DREAM_JOB_STAND_INS, DREAM_JOB_SYNONYMS } from "./dream-jobs";
 import {
   MAX_FIT_SCORE,
   TITLE_BONUS,
@@ -113,7 +113,7 @@ describe("conflict handling (student_05: surgeon, start working right away, avoi
       heading: "Closest career in our list to Surgeon",
       note: "Surgeon isn't in our career data yet.",
     });
-    expect(DREAM_JOB_ALIASES.surgeon).toContain(real.soc);
+    expect(DREAM_JOB_STAND_INS.surgeon).toContain(real.soc);
     expect(withinCeilings(occ(real.soc), f.filters.max_education, f.filters.job_zone_ceiling)).toBe(false);
     expect(real.avoid_hits).toEqual(["blood_medical"]);
   });
@@ -133,7 +133,7 @@ describe("conflict handling (student_05: surgeon, start working right away, avoi
     const res = selectCards(e.filters, e.quiz, occupations);
     expect(res).toMatchObject({ kind: "cards", mode: "conflict" });
     const [first] = cardsOf(res);
-    expect(DREAM_JOB_ALIASES.surgeon).toContain(first.soc);
+    expect(DREAM_JOB_STAND_INS.surgeon).toContain(first.soc);
     expect(first.slot).toBe("closest_match");
     expect(first.dream_job_label?.heading).toBe("Closest career in our list to Surgeon");
   });
@@ -220,20 +220,39 @@ describe("dream-job title and alias matching", () => {
     expect(matches("tattoo artist")).toEqual({ "27-1024": "alias" });
   });
 
-  it('"car mechanic" alias (longer) beats the one-word lay title "Mechanic"', () => {
-    expect(matches("car mechanic")).toEqual({ "49-3023": "alias" });
-    expect(matches("Car Mechanic at a dealership")).toEqual({ "49-3023": "alias" });
+  it('"car mechanic" is a synonym: a title match for automotive service technicians', () => {
+    expect(matches("car mechanic")).toEqual({ "49-3023": "title" });
+    expect(matches("Car Mechanic at a dealership")).toEqual({ "49-3023": "title" });
   });
 
-  it('"car mechanic" and "tattoo artist" get the closest-match label', () => {
-    for (const [job, soc] of [
-      ["car mechanic", "49-3023"],
-      ["tattoo artist", "27-1024"],
-    ] as const) {
-      const card = cardOne(job);
-      expect(card.soc, job).toBe(soc);
-      expect(card.dream_job_label, job).toEqual(dreamJobLabel(job));
-    }
+  it('"car mechanic" gives Automotive Service Technicians as card 1 with no label', () => {
+    expect(cardOne("car mechanic")).toMatchObject({ soc: "49-3023", slot: "direct", dream_job_label: null });
+  });
+
+  it("a synonym is the real path in conflict mode", () => {
+    const f = fixture("student_05");
+    const [first] = cardsOf(
+      selectFromInput({ ...toMatchInput(f.filters, f.quiz), dream_job: "car mechanic", avoid_flags: [] }, occupations),
+    );
+    expect(first).toMatchObject({ soc: "49-3023", slot: "real_path", dream_job_label: null });
+  });
+
+  it("a one-word synonym is a title only as the whole dream job", () => {
+    const syn = { mechanic: "49-3023" };
+    expect(Object.fromEntries(dreamJobMatches("Mechanic", occupations, {}, syn))).toEqual({
+      "49-3023": "title",
+      "49-9041": "title",
+    });
+    expect(Object.fromEntries(dreamJobMatches("boat mechanic", occupations, {}, syn))).toEqual({
+      "49-3023": "alias",
+      "49-9041": "alias",
+    });
+  });
+
+  it('"tattoo artist" gets the closest-match label', () => {
+    const card = cardOne("tattoo artist");
+    expect(card.soc).toBe("27-1024");
+    expect(card.dream_job_label).toEqual(dreamJobLabel("tattoo artist"));
   });
 
   it('"engineer" alone stays an unlabeled title match', () => {
@@ -412,7 +431,9 @@ describe("scoring tables", () => {
     expect(avoidHits("29-1141", ["blood_medical", "unknown_flag"])).toEqual(["blood_medical"]);
   });
 
-  it("dream-job aliases point only to roster careers", () => {
-    for (const list of Object.values(DREAM_JOB_ALIASES)) for (const soc of list) expect(socs.has(soc)).toBe(true);
+  it("dream-job synonyms and stand-ins point only to roster careers, with no key in both lists", () => {
+    for (const list of Object.values(DREAM_JOB_STAND_INS)) for (const soc of list) expect(socs.has(soc)).toBe(true);
+    for (const soc of Object.values(DREAM_JOB_SYNONYMS)) expect(socs.has(soc)).toBe(true);
+    for (const k of Object.keys(DREAM_JOB_SYNONYMS)) expect(Object.hasOwn(DREAM_JOB_STAND_INS, k)).toBe(false);
   });
 });
