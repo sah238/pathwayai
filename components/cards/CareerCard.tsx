@@ -201,10 +201,10 @@ export function CareerCard({ card, zip, tier, open, onToggle }: CareerCardProps)
   const wages = selectWages(card, zip);
   const panelId = `expand-${card.soc}`;
   return (
-    <article
-      aria-labelledby={`card-${card.soc}`}
-      className="row-span-6 grid grid-rows-subgrid gap-0 overflow-hidden rounded-xl border border-zinc-300 bg-white dark:border-zinc-700 dark:bg-zinc-950"
-    >
+    // Outer subgrid: 6 shared rows. The glance part fills rows 1–5 so factors line up across cards;
+    // the Expand footer sits in row 6 with self-start, so an open panel never stretches the other cards.
+    <article aria-labelledby={`card-${card.soc}`} className="row-span-6 grid grid-rows-subgrid gap-0">
+      <div className="row-span-5 grid grid-rows-subgrid gap-0 overflow-hidden rounded-t-xl border border-b-0 border-zinc-300 bg-white dark:border-zinc-700 dark:bg-zinc-950">
       <header className="p-4">
         <h2 id={`card-${card.soc}`} className="text-xl font-semibold">
           {card.title.value}
@@ -250,13 +250,15 @@ export function CareerCard({ card, zip, tier, open, onToggle }: CareerCardProps)
       <Factor n={4} title="Path to get there">
         <Path card={card} zip={zip} tier={tier} />
       </Factor>
+      </div>
 
-      <div className="border-t border-zinc-200 dark:border-zinc-800">
+      <div className="self-start overflow-hidden rounded-b-xl border border-zinc-300 bg-white dark:border-zinc-700 dark:bg-zinc-950">
         <button
           type="button"
           onClick={onToggle}
           aria-expanded={open}
-          aria-controls={panelId}
+          // Only reference the panel while it is rendered.
+          aria-controls={open ? panelId : undefined}
           className="flex w-full items-center justify-between gap-2 p-4 text-left text-sm font-semibold hover:bg-zinc-50 focus-visible:outline-2 focus-visible:outline-offset-[-2px] dark:hover:bg-zinc-900"
         >
           <span>

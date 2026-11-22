@@ -47,6 +47,9 @@ describe("EARLY_CAREER_TABLE", () => {
     expect(flag.text).toMatch(/research has found fewer young workers being hired in jobs like this/i);
     expect(flag.text).toMatch(/not a prediction/);
     expect(flag.source.source_url).toBe("https://digitaleconomy.stanford.edu/publications/canaries-in-the-coal-mine/");
+    expect(flag.source.data_vintage).toBe("Revised August 12, 2026");
+    expect(flag.table_status).toBe("Derived from the CLAUDE.md rule; verified 2026-11-22");
+    expect(flag.wording_status).toBe("Draft — pending counselor review");
   });
 });
 

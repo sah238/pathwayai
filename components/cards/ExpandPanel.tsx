@@ -90,6 +90,9 @@ function Outlook({ card }: { card: CardViewModel }) {
           <p>{o.early_career.text}</p>
           <p className="text-xs text-zinc-600 dark:text-zinc-400">{o.early_career.reason}</p>
           <SourceNote source={o.early_career.source} />
+          <p className="text-xs text-zinc-500 dark:text-zinc-400">
+            Wording: {o.early_career.wording_status.toLowerCase()}.
+          </p>
         </div>
       )}
     </Factor>

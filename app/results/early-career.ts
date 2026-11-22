@@ -9,11 +9,15 @@
 import type { z } from "zod";
 import type { Source } from "@/lib/data/provenance";
 import type { AiExposureTierSchema, EntryEducationSchema } from "@/lib/data/schemas";
+import { FIRST_STEP_REVIEW_STATUS } from "./first-steps";
 
 export type AiExposureTier = z.infer<typeof AiExposureTierSchema>;
 export type EntryEducation = z.infer<typeof EntryEducationSchema>;
 
-export const EARLY_CAREER_REVIEW_STATUS = "Draft — pending team review";
+export const EARLY_CAREER_TABLE_STATUS = "Derived from the CLAUDE.md rule; verified 2026-11-22";
+
+/** The flag text is shown to students, so its wording goes through counselor review like the first steps. */
+export const EARLY_CAREER_WORDING_STATUS = FIRST_STEP_REVIEW_STATUS;
 
 /** entry_education → ai_exposure_tier → show the flag? */
 export const EARLY_CAREER_TABLE: Record<EntryEducation, Record<AiExposureTier, boolean>> = {
@@ -26,8 +30,14 @@ export const EARLY_CAREER_TABLE: Record<EntryEducation, Record<AiExposureTier, b
   "Doctoral or professional degree": { Low: false, Moderate: false, High: true, "Very high": true },
 };
 
+/**
+ * URL and the August 12, 2026 revision verified against the Stanford Digital
+ * Economy Lab page on 2026-11-22 (working paper by Brynjolfsson, Chandar and
+ * Chen; page shows "Revised August 12 2026").
+ */
 export const EARLY_CAREER_SOURCE: Source = {
-  source: "Stanford Digital Economy Lab, “Canaries in the Coal Mine?”",
+  source:
+    "Stanford Digital Economy Lab, “Canaries in the Coal Mine? Six Facts about the Recent Employment Effects of Artificial Intelligence”",
   data_vintage: "Revised August 12, 2026",
   source_url: "https://digitaleconomy.stanford.edu/publications/canaries-in-the-coal-mine/",
 };
@@ -42,7 +52,10 @@ export interface EarlyCareerFlag {
   /** Why it shows, from the two looked-up values. */
   reason: string;
   source: Source;
-  review_status: typeof EARLY_CAREER_REVIEW_STATUS;
+  /** Status of the lookup table that decided to show the flag. */
+  table_status: typeof EARLY_CAREER_TABLE_STATUS;
+  /** Status of the badge, text and reason wording. */
+  wording_status: typeof EARLY_CAREER_WORDING_STATUS;
 }
 
 export function earlyCareerFlag(education: EntryEducation, tier: AiExposureTier): EarlyCareerFlag | null {
@@ -52,6 +65,7 @@ export function earlyCareerFlag(education: EntryEducation, tier: AiExposureTier)
     text: EARLY_CAREER_TEXT,
     reason: `Shown because BLS rates this job's AI exposure as ${tier} and it usually starts with a ${education.toLowerCase()}.`,
     source: EARLY_CAREER_SOURCE,
-    review_status: EARLY_CAREER_REVIEW_STATUS,
+    table_status: EARLY_CAREER_TABLE_STATUS,
+    wording_status: EARLY_CAREER_WORDING_STATUS,
   };
 }
