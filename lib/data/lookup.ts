@@ -3,31 +3,10 @@
  * data_vintage and source_url (CLAUDE.md rule 7).
  */
 import type { DmvState } from "./constants";
-import type { Institution, Occupation, OccupationsFile } from "./schemas";
+import type { Occupation, OccupationsFile } from "./schemas";
 
-// ---------------------------------------------------------------------------
-// Institution provenance
-// ---------------------------------------------------------------------------
-
-export type ProvenanceSection = "admissions" | "cost_and_net_price" | "outcomes_and_debt" | "apprenticeship";
-
-export interface Source {
-  source: string;
-  data_vintage: string | null;
-  source_url: string;
-}
-
-/**
- * Source for one section of an institution record, taken from the record's own
- * `provenance` object. It never falls back to `metadata.field_sources`: when a
- * record has no provenance for the section, the answer is null (show the
- * missing-data badge).
- */
-export function institutionSource(inst: Institution, section: ProvenanceSection): Source | null {
-  const p = inst.provenance[section];
-  if (!p) return null;
-  return { source: p.source, data_vintage: p.data_vintage ?? null, source_url: p.source_url };
-}
+// Institution provenance lives in ./provenance; re-exported for existing callers.
+export { institutionSource, type ProvenanceSection, type Source } from "./provenance";
 
 // ---------------------------------------------------------------------------
 // Wages: state percentiles when they exist, else national
