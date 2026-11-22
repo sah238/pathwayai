@@ -21,7 +21,7 @@ export type Q4Value = OnetWorkValue | "curiosity";
  * Quiz Q4 card labels, word for word from docs/values-quiz.md, mapped to the
  * value each one reads. The label is reused on "Why it fits you".
  */
-export const Q4_OPTIONS: ReadonlyArray<{ label: string; value: Q4Value }> = [
+export const Q4_OPTIONS = [
   { label: "See the results of my work", value: "achievement" },
   { label: "Decide for myself how to do things", value: "independence" },
   { label: "Get noticed and move up", value: "recognition" },
@@ -32,4 +32,5 @@ export const Q4_OPTIONS: ReadonlyArray<{ label: string; value: Q4Value }> = [
     label: "Keep learning new skills and discover things no one knows yet",
     value: "curiosity",
   },
-];
+] as const satisfies ReadonlyArray<{ label: string; value: Q4Value }>;
+export type Q4Label = (typeof Q4_OPTIONS)[number]["label"];

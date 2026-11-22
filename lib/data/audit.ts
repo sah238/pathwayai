@@ -605,7 +605,7 @@ export function checkQ4(occs: Occupation[], fixtures: StudentFixture[] = []): Fi
     message: "Deprecated legacy labels; not used for Q4",
   });
 
-  const labels = new Set(Q4_OPTIONS.map((o) => o.label));
+  const labels = new Set<string>(Q4_OPTIONS.map((o) => o.label));
   for (const fx of fixtures) {
     const q4 = fx.data.quiz_responses?.q4_values_most_least;
     const answers = [
