@@ -15,7 +15,7 @@ const PROGRAMS_PER_CAREER = 2;
 
 /** One page, US Letter. Dark mode is overridden so the printout is black on white. */
 const PRINT_CSS = `
-@page { size: letter; margin: 0.5in; }
+@page { size: letter; margin: 0.4in; }
 @media print {
   html, body { background: #fff !important; color: #000 !important; }
 }
@@ -52,7 +52,7 @@ function guideSources(cards: CardViewModel[], zip: ZipStatus, tier: IncomeTier |
 
 function Heading({ n, children }: { n: number; children: string }) {
   return (
-    <h2 className="mt-3 border-b border-black pb-0.5 text-[11pt] font-bold">
+    <h2 className="mt-2 border-b border-black pb-0.5 text-[11pt] font-bold">
       {n}. {children}
     </h2>
   );
@@ -66,7 +66,7 @@ function Heading({ n, children }: { n: number; children: string }) {
 export function CounselorGuide({ cards, zip, tier }: { cards: CardViewModel[]; zip: ZipStatus; tier: IncomeTier | null }) {
   const sources = guideSources(cards, zip, tier);
   return (
-    <div className="hidden bg-white text-[9.5pt] leading-snug text-black print:block" data-guide>
+    <div className="hidden bg-white text-[9.5pt] leading-[1.3] text-black print:block" data-guide>
       <style>{PRINT_CSS}</style>
       <header>
         <h1 className="text-[15pt] font-bold">My career exploration guide</h1>
@@ -158,7 +158,7 @@ export function CounselorGuide({ cards, zip, tier }: { cards: CardViewModel[]; z
         estimate. Learn about federal aid at studentaid.gov.
       </p>
 
-      <footer className="mt-3 border-t border-zinc-400 pt-1 text-[7.5pt] leading-tight text-zinc-700">
+      <footer className="mt-2 border-t border-zinc-400 pt-1 text-[7.5pt] leading-tight text-zinc-700">
         <p>
           Pay is a historical average, not a guarantee. Sources:{" "}
           {sources.map((s) => (s.data_vintage ? `${s.source} (${s.data_vintage})` : s.source)).join("; ")}. O*NET
