@@ -12,7 +12,9 @@
  *   2. two_year – best apprenticeship or two-year path within the ceilings
  *   3. adjacent – shares a RIASEC letter, different SOC major group from 1 and 2
  * Conflict mode (has_constraint_conflict):
- *   1. real_path      – best total with the ceilings ignored
+ *   1. real_path      – best total with the ceilings ignored. Called the real
+ *        path only when the dream job matches the career's own title; an
+ *        alias or score-only pick is closest_match, with dreamJobLabel text
  *   2–3. short_training – best careers needing at most a postsecondary
  *        nondegree award and Job Zone 3 (or the student's own ceiling, if higher)
  *
@@ -32,21 +34,43 @@ import {
   isApprenticeshipOrTwoYear,
   isRegisteredApprenticeship,
   majorGroup,
-  titleMatches,
+  titleMatch,
   valueItems,
   withinCeilings,
+  type TitleMatch,
   type ValueItem,
 } from "./score";
 
 export const NUDGE_MESSAGE =
   "PathwayAI helps you explore careers. Tell us about a job you've imagined, or describe a workday you'd enjoy, and we'll show you three careers to look at.";
 
-export type Slot = "direct" | "two_year" | "adjacent" | "real_path" | "short_training";
+/**
+ * Conflict card 1 is "real_path" when the dream job matches a roster title,
+ * and "closest_match" when it matched only through a draft alias (or not at
+ * all): then it is not the student's job, so it must not be called the real path.
+ */
+export type Slot = "direct" | "two_year" | "adjacent" | "real_path" | "closest_match" | "short_training";
+
+/** Fixed wording shown on a closest_match card. `typed` is the student's Q1 job, as entered. */
+export interface DreamJobLabel {
+  heading: string;
+  note: string;
+}
+
+export function dreamJobLabel(typed: string): DreamJobLabel {
+  const job = typed.trim();
+  return {
+    heading: `Closest career in our list to ${job}`,
+    note: `${job} isn't in our career data yet.`,
+  };
+}
 
 export interface ScoreBreakdown {
   interest: number;
   values: ValueItem[];
   values_total: number;
+  /** How the dream job matched this career: its own title, a draft alias, or not at all. */
+  title_match: TitleMatch;
   title: number;
   /** Slot 2 only. */
   apprenticeship_bonus: number;
@@ -61,6 +85,8 @@ export interface Pick {
   avoid_hits: string[];
   /** Rules this slot had to relax to find a career, in the order tried. */
   fallbacks: string[];
+  /** Set only on a closest_match card. */
+  dream_job_label: DreamJobLabel | null;
 }
 
 export type SelectResult =
@@ -114,13 +140,15 @@ function score(input: MatchInput, occ: Occupation, slotBonus = 0): Scored {
   const interest = interestPoints(input.interest_tags, occ.work_profile.riasec_code);
   const values = valueItems(input.work_values, occ);
   const values_total = values.reduce((s, v) => s + v.points, 0);
-  const title = titleMatches(input.dream_job, occ) ? TITLE_BONUS : 0;
+  const title_match = titleMatch(input.dream_job, occ);
+  const title = title_match ? TITLE_BONUS : 0;
   return {
     occ,
     breakdown: {
       interest,
       values,
       values_total,
+      title_match,
       title,
       apprenticeship_bonus: slotBonus,
       total: interest + values_total + title + slotBonus,
@@ -161,6 +189,7 @@ function best(
         breakdown: hit.breakdown,
         avoid_hits: hit.hits,
         fallbacks,
+        dream_job_label: null,
       };
     }
     if (n > 0) fallbacks.push(rules[n - 1].name);
@@ -183,7 +212,17 @@ export function selectFromInput(input: MatchInput, occupations: Occupation[]): S
   };
 
   if (input.has_constraint_conflict) {
-    const real = take(best(scored, notTaken, [], "real_path"), "real path");
+    const top = take(best(scored, notTaken, [], "real_path"), "real path");
+    // Only a roster title match is the real path. An alias (or no match) is
+    // just the closest career we have, and says so when the student named a job.
+    const real: Pick =
+      top.breakdown.title_match === "title"
+        ? top
+        : {
+            ...top,
+            slot: "closest_match",
+            dream_job_label: input.dream_job ? dreamJobLabel(input.dream_job) : null,
+          };
 
     // Short training: at most a postsecondary nondegree award and Job Zone 3,
     // or the student's own ceiling where it is higher (null = no limit).

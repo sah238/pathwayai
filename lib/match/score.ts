@@ -65,17 +65,26 @@ export function valueItems(values: readonly WorkValue[], occ: Occupation): Value
 
 const words = (s: string) => ` ${s.toLowerCase().replace(/\([^)]*\)/g, " ").replace(/[^a-z0-9]+/g, " ").trim()} `;
 
+export type TitleMatch = "title" | "alias" | null;
+
 /**
- * True when the dream job contains one of the career's titles, or a
- * DREAM_JOB_ALIASES key that points to it, as whole words.
+ * "title" when the dream job contains one of the career's own titles as whole
+ * words; otherwise "alias" when it contains a DREAM_JOB_ALIASES key that
+ * points to the career; otherwise null.
  */
-export function titleMatches(dreamJob: string | null, occ: Occupation): boolean {
-  if (!dreamJob) return false;
+export function titleMatch(dreamJob: string | null, occ: Occupation): TitleMatch {
+  if (!dreamJob) return null;
   const job = words(dreamJob);
+  const has = (t: string) => {
+    const w = words(t);
+    return w.trim() !== "" && job.includes(w);
+  };
+  // Career and BLS titles are plural ("Registered Nurses"); students type the singular.
+  const singular = (t: string) => t.replace(/s$/i, "");
+  const titles = [occ.career_title, occ.bls_title].flatMap((t) => [t, singular(t)]);
+  if ([...titles, ...occ.lay_job_titles].some(has)) return "title";
   const aliases = Object.keys(DREAM_JOB_ALIASES).filter((k) => DREAM_JOB_ALIASES[k].includes(occ.soc_code));
-  return [occ.career_title, occ.bls_title, ...occ.lay_job_titles, ...aliases]
-    .map(words)
-    .some((t) => t.trim() !== "" && job.includes(t));
+  return aliases.some(has) ? "alias" : null;
 }
 
 const EDUCATION_ORDER = EntryEducationSchema.options;

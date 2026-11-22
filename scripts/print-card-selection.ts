@@ -19,7 +19,8 @@ const fmt = (p: Pick) => {
   const b = p.breakdown;
   const vals = b.values.map((v) => `${v.value}:${v.student_weight}×${v.career_points}`).join(" ");
   const extras = [
-    b.title ? `title +${b.title}` : "",
+    b.title ? `${b.title_match} +${b.title}` : "",
+    p.dream_job_label ? `"${p.dream_job_label.heading}" / "${p.dream_job_label.note}"` : "",
     b.apprenticeship_bonus ? `appr +${b.apprenticeship_bonus}` : "",
     p.avoid_hits.length ? `AVOID HIT: ${p.avoid_hits.join(",")}` : "",
     ...p.fallbacks.map((f) => `fallback: ${f}`),

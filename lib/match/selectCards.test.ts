@@ -7,10 +7,11 @@ import { ExtractedFiltersSchema, type ExtractedFilters } from "@/lib/extract/sch
 import { QuizResponsesSchema, type QuizResponses } from "@/lib/quiz/responses";
 import { AVOID_TABLE, avoidHits } from "./avoid";
 import { DREAM_JOB_ALIASES } from "./dream-jobs";
-import { MAX_FIT_SCORE, TITLE_BONUS, curiosityPoints, interestPoints, withinCeilings } from "./score";
+import { MAX_FIT_SCORE, TITLE_BONUS, curiosityPoints, interestPoints, titleMatch, withinCeilings } from "./score";
 import {
   NUDGE_MESSAGE,
   SelectionError,
+  dreamJobLabel,
   selectCards,
   selectFromInput,
   toMatchInput,
@@ -95,9 +96,14 @@ describe("conflict handling (student_05: surgeon, start working right away, avoi
     expect(r).toMatchObject({ kind: "cards", mode: "conflict" });
   });
 
-  it("card 1 is the real path, beyond the ceiling, with the avoid hit reported", () => {
+  it("card 1 is the closest career to Surgeon (an alias, not the real path), beyond the ceiling, with the avoid hit reported", () => {
     const [real] = cardsOf(r);
-    expect(real.slot).toBe("real_path");
+    expect(real.slot).toBe("closest_match");
+    expect(real.breakdown.title_match).toBe("alias");
+    expect(real.dream_job_label).toEqual({
+      heading: "Closest career in our list to Surgeon",
+      note: "Surgeon isn't in our career data yet.",
+    });
     expect(DREAM_JOB_ALIASES.surgeon).toContain(real.soc);
     expect(withinCeilings(occ(real.soc), f.filters.max_education, f.filters.job_zone_ceiling)).toBe(false);
     expect(real.avoid_hits).toEqual(["blood_medical"]);
@@ -117,7 +123,59 @@ describe("conflict handling (student_05: surgeon, start working right away, avoi
     const e = fixture("conflict_surgeon");
     const res = selectCards(e.filters, e.quiz, occupations);
     expect(res).toMatchObject({ kind: "cards", mode: "conflict" });
-    expect(DREAM_JOB_ALIASES.surgeon).toContain(cardsOf(res)[0].soc);
+    const [first] = cardsOf(res);
+    expect(DREAM_JOB_ALIASES.surgeon).toContain(first.soc);
+    expect(first.slot).toBe("closest_match");
+    expect(first.dream_job_label?.heading).toBe("Closest career in our list to Surgeon");
+  });
+
+  const conflictWith = (dream_job: string | null) =>
+    cardsOf(
+      selectFromInput(
+        { ...toMatchInput(f.filters, f.quiz), dream_job, avoid_flags: [] },
+        occupations,
+      ),
+    )[0];
+
+  it("a dream job that matches a roster title is the real path, with no closest-match label", () => {
+    const first = conflictWith("Veterinarian");
+    expect(first).toMatchObject({ soc: "29-1131", slot: "real_path", dream_job_label: null });
+    expect(first.breakdown.title_match).toBe("title");
+  });
+
+  it("with no dream job, card 1 is a closest match with no label to show", () => {
+    const first = conflictWith(null);
+    expect(first.slot).toBe("closest_match");
+    expect(first.breakdown.title_match).toBeNull();
+    expect(first.dream_job_label).toBeNull();
+  });
+
+  it("labels use what the student typed, trimmed", () => {
+    expect(dreamJobLabel("  Brain surgeon ")).toEqual({
+      heading: "Closest career in our list to Brain surgeon",
+      note: "Brain surgeon isn't in our career data yet.",
+    });
+  });
+});
+
+describe("dream-job title and alias matching", () => {
+  it("prefers a roster title over an alias", () => {
+    expect(titleMatch("Electrician", occ("47-2111"))).toBe("title");
+    expect(titleMatch("Registered Nurse", occ("29-1141"))).toBe("title");
+    expect(titleMatch("Pediatric Nurse", occ("29-1141"))).toBe("alias");
+  });
+
+  it("maps cybersecurity, programmer and coder to software developers", () => {
+    for (const job of ["Cybersecurity Analyst", "Video game programmer", "Coder"]) {
+      expect(titleMatch(job, occ("15-1252")), job).toBe("alias");
+    }
+    expect(titleMatch("Encoder", occ("15-1252"))).toBeNull();
+  });
+
+  it("student_04 (Cybersecurity Analyst) gets software developers as the direct match", () => {
+    const f = fixture("student_04");
+    const [direct] = cardsOf(selectCards(f.filters, f.quiz, occupations));
+    expect(direct).toMatchObject({ soc: "15-1252", slot: "direct", dream_job_label: null });
   });
 });
 
