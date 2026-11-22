@@ -7,8 +7,17 @@ import { ExtractedFiltersSchema, type ExtractedFilters } from "@/lib/extract/sch
 import { QuizResponsesSchema, type QuizResponses } from "@/lib/quiz/responses";
 import { AVOID_TABLE, avoidHits } from "./avoid";
 import { DREAM_JOB_ALIASES } from "./dream-jobs";
-import { MAX_FIT_SCORE, TITLE_BONUS, curiosityPoints, interestPoints, titleMatch, withinCeilings } from "./score";
 import {
+  MAX_FIT_SCORE,
+  TITLE_BONUS,
+  curiosityPoints,
+  dreamJobMatches,
+  interestPoints,
+  matchesOwnTitle,
+  withinCeilings,
+} from "./score";
+import {
+  MATCH_WORDING_REVIEW_STATUS,
   NUDGE_MESSAGE,
   SelectionError,
   dreamJobLabel,
@@ -150,6 +159,10 @@ describe("conflict handling (student_05: surgeon, start working right away, avoi
     expect(first.dream_job_label).toBeNull();
   });
 
+  it("student-facing wording is marked as a draft pending counselor review", () => {
+    expect(MATCH_WORDING_REVIEW_STATUS).toBe("Draft — pending counselor review");
+  });
+
   it("labels use what the student typed, trimmed", () => {
     expect(dreamJobLabel("  Brain surgeon ")).toEqual({
       heading: "Closest career in our list to Brain surgeon",
@@ -159,17 +172,45 @@ describe("conflict handling (student_05: surgeon, start working right away, avoi
 });
 
 describe("dream-job title and alias matching", () => {
-  it("prefers a roster title over an alias", () => {
-    expect(titleMatch("Electrician", occ("47-2111"))).toBe("title");
-    expect(titleMatch("Registered Nurse", occ("29-1141"))).toBe("title");
-    expect(titleMatch("Pediatric Nurse", occ("29-1141"))).toBe("alias");
+  const matches = (job: string) => Object.fromEntries(dreamJobMatches(job, occupations));
+
+  it("matches roster titles, singular forms included", () => {
+    expect(matches("Electrician")).toEqual({ "47-2111": "title" });
+    expect(matches("Registered Nurse")).toEqual({ "29-1141": "title" });
+    expect(matchesOwnTitle("Veterinarian", occ("29-1131"))).toBe(true);
+  });
+
+  it("uses an alias only when no roster career matches by title", () => {
+    // "nurse practitioner" contains the "nurse" alias, but NP's own title wins and RN gets nothing.
+    expect(matches("nurse practitioner")).toEqual({ "29-1171": "title" });
+    expect(matches("Pediatric Nurse")).toEqual({ "29-1141": "alias" });
+  });
+
+  it("prefers the longest alias when several match", () => {
+    const table = { nurse: ["29-1141"], "nurse anesthetist": ["29-1171"] };
+    expect(Object.fromEntries(dreamJobMatches("Certified nurse anesthetist", occupations, table))).toEqual({
+      "29-1171": "alias",
+    });
   });
 
   it("maps cybersecurity, programmer and coder to software developers", () => {
     for (const job of ["Cybersecurity Analyst", "Video game programmer", "Coder"]) {
-      expect(titleMatch(job, occ("15-1252")), job).toBe("alias");
+      expect(matches(job), job).toEqual({ "15-1252": "alias" });
     }
-    expect(titleMatch("Encoder", occ("15-1252"))).toBeNull();
+    expect(matches("Encoder")).toEqual({});
+  });
+
+  const cardOne = (dream_job: string) => {
+    const f = fixture("student_10"); // no ceilings, no conflict
+    return cardsOf(selectFromInput({ ...toMatchInput(f.filters, f.quiz), dream_job, avoid_flags: [] }, occupations))[0];
+  };
+
+  it('"nurse practitioner" gives Nurse Practitioners as card 1 with no label', () => {
+    expect(cardOne("nurse practitioner")).toMatchObject({ soc: "29-1171", slot: "direct", dream_job_label: null });
+  });
+
+  it('"nurse" alone gives Registered Nurses as card 1 with the alias label', () => {
+    expect(cardOne("nurse")).toMatchObject({ soc: "29-1141", slot: "direct", dream_job_label: dreamJobLabel("nurse") });
   });
 
   it("student_04 (Cybersecurity Analyst) gets software developers as the direct match, labeled as closest", () => {

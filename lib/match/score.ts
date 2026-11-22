@@ -36,9 +36,10 @@ export function interestPoints(tags: readonly Interest[], riasec: string): numbe
 }
 
 /**
- * Curiosity = O*NET Investigative interest position; approved by Sophie 2026-11-22.
- * 3 if "I" is the first letter of riasec_code, 2 if second, 1 if third, 0 if
- * absent. occupations.json keeps work_values.curiosity as null; this rule is
+ * Curiosity = O*NET Investigative interest position (3/2/1 by position in
+ * riasec_code); decided by Sophie 2026-11-22, recorded in CLAUDE.md (Open
+ * Questions, decided items). 3 if "I" is the first letter of riasec_code, 2 if
+ * second, 1 if third, 0 if absent. occupations.json keeps work_values.curiosity as null; this rule is
  * the only place Curiosity gets a career score.
  */
 export function curiosityPoints(riasec: string): number {
@@ -67,24 +68,44 @@ const words = (s: string) => ` ${s.toLowerCase().replace(/\([^)]*\)/g, " ").repl
 
 export type TitleMatch = "title" | "alias" | null;
 
-/**
- * "title" when the dream job contains one of the career's own titles as whole
- * words; otherwise "alias" when it contains a DREAM_JOB_ALIASES key that
- * points to the career; otherwise null.
- */
-export function titleMatch(dreamJob: string | null, occ: Occupation): TitleMatch {
-  if (!dreamJob) return null;
-  const job = words(dreamJob);
-  const has = (t: string) => {
-    const w = words(t);
-    return w.trim() !== "" && job.includes(w);
-  };
+/** True when `text` appears in the dream job as whole words, ignoring case and parentheses. */
+function contains(dreamJob: string, text: string): boolean {
+  const w = words(text);
+  return w.trim() !== "" && words(dreamJob).includes(w);
+}
+
+/** True when the dream job contains one of the career's own titles (singular forms included). */
+export function matchesOwnTitle(dreamJob: string, occ: Occupation): boolean {
   // Career and BLS titles are plural ("Registered Nurses"); students type the singular.
   const singular = (t: string) => t.replace(/s$/i, "");
   const titles = [occ.career_title, occ.bls_title].flatMap((t) => [t, singular(t)]);
-  if ([...titles, ...occ.lay_job_titles].some(has)) return "title";
-  const aliases = Object.keys(DREAM_JOB_ALIASES).filter((k) => DREAM_JOB_ALIASES[k].includes(occ.soc_code));
-  return aliases.some(has) ? "alias" : null;
+  return [...titles, ...occ.lay_job_titles].some((t) => contains(dreamJob, t));
+}
+
+/**
+ * How the dream job matched each career, decided across the whole roster so
+ * a title always beats an alias:
+ * 1. If any career's own title matches, those careers are "title" and the
+ *    alias table is not used at all ("Nurse Practitioner" never also gives
+ *    the "nurse" alias to Registered Nurses).
+ * 2. Otherwise the longest DREAM_JOB_ALIASES key found in the dream job wins
+ *    (ties: alphabetical), and only its careers are "alias".
+ * Careers not in the map did not match.
+ */
+export function dreamJobMatches(
+  dreamJob: string | null,
+  occupations: readonly Occupation[],
+  aliases: Record<string, readonly string[]> = DREAM_JOB_ALIASES,
+): Map<string, Exclude<TitleMatch, null>> {
+  const out = new Map<string, Exclude<TitleMatch, null>>();
+  if (!dreamJob) return out;
+  for (const occ of occupations) if (matchesOwnTitle(dreamJob, occ)) out.set(occ.soc_code, "title");
+  if (out.size) return out;
+  const key = Object.keys(aliases)
+    .filter((k) => contains(dreamJob, k))
+    .sort((a, b) => b.length - a.length || a.localeCompare(b))[0];
+  for (const soc of key ? aliases[key] : []) out.set(soc, "alias");
+  return out;
 }
 
 const EDUCATION_ORDER = EntryEducationSchema.options;

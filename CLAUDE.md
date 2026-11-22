@@ -283,6 +283,7 @@ All eight lead to the Class 9 demonstration, in this order. Owners can be reassi
 - [ ] How long is the values quiz, and how are its questions worded?
 - [x] ~~Which data will cover work-life balance and travel?~~ Decided: schedule and balance uses O\*NET Work Context (weekly hours, schedule regularity); travel is dropped.
 - [x] ~~Which LLM does the app use?~~ Decided 2026-11-21: the Claude API, replacing Gemini.
+- [x] ~~How is the Q4 Curiosity value scored, given no dataset field?~~ Curiosity = O\*NET Investigative interest position (3/2/1 by position in riasec_code); decided by Sophie 2026-11-22. `work_values.curiosity` stays null in the data; the rule lives in `lib/match/score.ts`.
 - [ ] Should O\*NET related occupations and the Work Context schedule fields go into Kamya's milestone 1 scope, so "Where it leads" and "Schedule and balance" can move from Beta stretch to Beta core?
 - [ ] Which O\*NET Work Context fields best represent weekly hours and schedule regularity? Confirm at download.
 - [ ] Who builds and reviews the lookup table mapping education or training level to time to first paycheck?

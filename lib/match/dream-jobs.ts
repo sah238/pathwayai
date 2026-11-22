@@ -1,6 +1,7 @@
 /**
  * Dream-job words the roster has no title for, mapped to the nearest beta
- * roster careers. Used only for the title bonus (./score.ts, titleMatches).
+ * roster careers. Used only for the title bonus (./score.ts, dreamJobMatches),
+ * and only when no roster career matches by its own title.
  *
  * DRAFT for team review (added 2026-11-22 alongside the Q9 avoid table).
  * Without it, "Surgeon" matches nothing and the conflict real path falls to

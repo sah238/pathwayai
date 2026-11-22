@@ -34,13 +34,20 @@ import {
   isApprenticeshipOrTwoYear,
   isRegisteredApprenticeship,
   majorGroup,
-  titleMatch,
+  dreamJobMatches,
   valueItems,
   withinCeilings,
   type TitleMatch,
   type ValueItem,
 } from "./score";
 
+/**
+ * Student-facing wording in this file (NUDGE_MESSAGE and dreamJobLabel):
+ * DRAFT wording, pending counselor review, like app/results/first-steps.ts.
+ */
+export const MATCH_WORDING_REVIEW_STATUS = "Draft — pending counselor review";
+
+/** Shown instead of cards when Stage 1 says the input is not about careers. Draft — pending counselor review. */
 export const NUDGE_MESSAGE =
   "PathwayAI helps you explore careers. Tell us about a job you've imagined, or describe a workday you'd enjoy, and we'll show you three careers to look at.";
 
@@ -51,7 +58,10 @@ export const NUDGE_MESSAGE =
  */
 export type Slot = "direct" | "two_year" | "adjacent" | "real_path" | "closest_match" | "short_training";
 
-/** Fixed wording shown on an alias-matched or closest_match card. `typed` is the student's Q1 job, as entered. */
+/**
+ * Fixed wording shown on an alias-matched or closest_match card. `typed` is
+ * the student's Q1 job, as entered. Draft — pending counselor review.
+ */
 export interface DreamJobLabel {
   heading: string;
   note: string;
@@ -136,11 +146,13 @@ interface Scored {
   hits: string[];
 }
 
-function score(input: MatchInput, occ: Occupation, slotBonus = 0): Scored {
+type DreamJobMatches = ReturnType<typeof dreamJobMatches>;
+
+function score(input: MatchInput, occ: Occupation, matches: DreamJobMatches, slotBonus = 0): Scored {
   const interest = interestPoints(input.interest_tags, occ.work_profile.riasec_code);
   const values = valueItems(input.work_values, occ);
   const values_total = values.reduce((s, v) => s + v.points, 0);
-  const title_match = titleMatch(input.dream_job, occ);
+  const title_match: TitleMatch = matches.get(occ.soc_code) ?? null;
   const title = title_match ? TITLE_BONUS : 0;
   return {
     occ,
@@ -202,7 +214,8 @@ const noAvoid: Rule = { name: "avoid flags relaxed", test: (s) => s.hits.length 
 export function selectFromInput(input: MatchInput, occupations: Occupation[]): SelectResult {
   if (!input.is_career_query) return { kind: "nudge", message: NUDGE_MESSAGE };
 
-  const scored = occupations.map((o) => score(input, o));
+  const matches = dreamJobMatches(input.dream_job, occupations);
+  const scored = occupations.map((o) => score(input, o, matches));
   const taken = new Set<string>();
   const notTaken = (s: Scored) => !taken.has(s.occ.soc_code);
   const take = (p: Pick | null, what: string): Pick => {
@@ -241,7 +254,7 @@ export function selectFromInput(input: MatchInput, occupations: Occupation[]): S
   const direct = take(best(scored, eligible, [noAvoid], "direct"), "direct");
 
   const twoYearScored = occupations.map((o) =>
-    score(input, o, input.apprenticeship_interest && isRegisteredApprenticeship(o) ? APPRENTICESHIP_BONUS : 0),
+    score(input, o, matches, input.apprenticeship_interest && isRegisteredApprenticeship(o) ? APPRENTICESHIP_BONUS : 0),
   );
   const twoYear = take(
     best(twoYearScored, (s) => eligible(s) && isApprenticeshipOrTwoYear(s.occ), [noAvoid], "two_year"),
