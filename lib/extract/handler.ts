@@ -17,7 +17,7 @@ function error(status: number, code: string): Response {
 }
 
 /** True if any string anywhere in the value is longer than MAX_TEXT_CHARS. */
-function hasLongText(value: unknown): boolean {
+export function hasLongText(value: unknown): boolean {
   if (typeof value === "string") return value.length > MAX_TEXT_CHARS;
   if (Array.isArray(value)) return value.some(hasLongText);
   if (value && typeof value === "object") return Object.values(value).some(hasLongText);

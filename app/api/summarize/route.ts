@@ -5,6 +5,7 @@
  */
 import Anthropic from "@anthropic-ai/sdk";
 import { getRepository } from "@/lib/data/server";
+import { withRateLimit } from "@/lib/rate-limit";
 import { createSummarizeHandler } from "@/lib/summarize/handler";
 
 let client: Anthropic | null = null;
@@ -16,4 +17,5 @@ function getClient(): Anthropic | null {
   return client;
 }
 
-export const POST = createSummarizeHandler(getClient, getRepository);
+// Per-IP limit; per serverless instance only (see lib/rate-limit.ts).
+export const POST = withRateLimit(createSummarizeHandler(getClient, getRepository));
