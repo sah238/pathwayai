@@ -74,22 +74,49 @@ function contains(dreamJob: string, text: string): boolean {
   return w.trim() !== "" && words(dreamJob).includes(w);
 }
 
-/** True when the dream job contains one of the career's own titles (singular forms included). */
+const normalized = (s: string) => words(s).trim();
+const singular = (t: string) => t.replace(/s$/i, "");
+const isOneWord = (t: string) => normalized(t) !== "" && !normalized(t).includes(" ");
+
+/**
+ * The career's one-word lay titles ("Engineer", "Mechanic", "Artist") that
+ * appear in the dream job as part of a longer phrase ("aerospace engineer").
+ * These are too broad to be a title match, so they count like an alias.
+ */
+function partialLayWords(dreamJob: string, occ: Occupation): string[] {
+  const job = normalized(dreamJob);
+  return occ.lay_job_titles
+    .filter((t) => isOneWord(t) && contains(dreamJob, t) && normalized(t) !== job && normalized(t) !== singular(job))
+    .map(normalized);
+}
+
+/**
+ * True when the dream job matches one of the career's own titles:
+ * - career or BLS title (singular forms included) anywhere in the dream job;
+ * - a multi-word lay title anywhere in the dream job;
+ * - a one-word lay title only when it is the entire dream job (after
+ *   trimming, singular forms included): "Engineer" or "Engineers", not
+ *   "Aerospace engineer" (see partialLayWords).
+ */
 export function matchesOwnTitle(dreamJob: string, occ: Occupation): boolean {
   // Career and BLS titles are plural ("Registered Nurses"); students type the singular.
-  const singular = (t: string) => t.replace(/s$/i, "");
   const titles = [occ.career_title, occ.bls_title].flatMap((t) => [t, singular(t)]);
-  return [...titles, ...occ.lay_job_titles].some((t) => contains(dreamJob, t));
+  const multiWordLay = occ.lay_job_titles.filter((t) => !isOneWord(t));
+  if ([...titles, ...multiWordLay].some((t) => contains(dreamJob, t))) return true;
+  const job = normalized(dreamJob);
+  return occ.lay_job_titles.some((t) => isOneWord(t) && [job, singular(job)].includes(normalized(t)));
 }
 
 /**
  * How the dream job matched each career, decided across the whole roster so
  * a title always beats an alias:
- * 1. If any career's own title matches, those careers are "title" and the
- *    alias table is not used at all ("Nurse Practitioner" never also gives
+ * 1. If any career's own title matches (matchesOwnTitle), those careers are
+ *    "title" and nothing else is used ("Nurse Practitioner" never also gives
  *    the "nurse" alias to Registered Nurses).
- * 2. Otherwise the longest DREAM_JOB_ALIASES key found in the dream job wins
- *    (ties: alphabetical), and only its careers are "alias".
+ * 2. Otherwise the candidates are the DREAM_JOB_ALIASES keys found in the
+ *    dream job plus one-word lay titles found inside a longer phrase
+ *    (partialLayWords). The longest wins (ties: alphabetical), and only its
+ *    careers are "alias", so they get the closest-match label.
  * Careers not in the map did not match.
  */
 export function dreamJobMatches(
@@ -101,10 +128,14 @@ export function dreamJobMatches(
   if (!dreamJob) return out;
   for (const occ of occupations) if (matchesOwnTitle(dreamJob, occ)) out.set(occ.soc_code, "title");
   if (out.size) return out;
-  const key = Object.keys(aliases)
-    .filter((k) => contains(dreamJob, k))
-    .sort((a, b) => b.length - a.length || a.localeCompare(b))[0];
-  for (const soc of key ? aliases[key] : []) out.set(soc, "alias");
+
+  const pool = new Map<string, Set<string>>();
+  const add = (key: string, soc: string) => pool.set(key, (pool.get(key) ?? new Set()).add(soc));
+  for (const k of Object.keys(aliases)) if (contains(dreamJob, k)) for (const soc of aliases[k]) add(normalized(k), soc);
+  for (const occ of occupations) for (const w of partialLayWords(dreamJob, occ)) add(w, occ.soc_code);
+
+  const key = [...pool.keys()].sort((a, b) => b.length - a.length || a.localeCompare(b))[0];
+  for (const soc of key ? pool.get(key)! : []) out.set(soc, "alias");
   return out;
 }
 

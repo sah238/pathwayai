@@ -205,6 +205,49 @@ describe("dream-job title and alias matching", () => {
     return cardsOf(selectFromInput({ ...toMatchInput(f.filters, f.quiz), dream_job, avoid_flags: [] }, occupations))[0];
   };
 
+  it("a one-word lay title is a title match only as the entire dream job", () => {
+    expect(matches("engineer")).toEqual({ "17-2081": "title" });
+    expect(matches("  Engineers ")).toEqual({ "17-2081": "title" });
+    expect(matches("Designer")).toEqual({ "27-1024": "title" });
+    // Multi-word lay titles and career titles still match inside a phrase.
+    expect(matches("software engineer")).toEqual({ "15-1252": "title" });
+    expect(matches("Master Electrician")).toEqual({ "47-2111": "title" });
+  });
+
+  it("a one-word lay title inside a longer phrase counts like an alias", () => {
+    expect(matches("aerospace engineer")).toEqual({ "17-2081": "alias" });
+    expect(matches("car mechanic")).toEqual({ "49-9041": "alias" });
+    expect(matches("tattoo artist")).toEqual({ "27-1024": "alias" });
+  });
+
+  it('"car mechanic" and "tattoo artist" get the closest-match label', () => {
+    for (const [job, soc] of [
+      ["car mechanic", "49-9041"],
+      ["tattoo artist", "27-1024"],
+    ] as const) {
+      const card = cardOne(job);
+      expect(card.soc, job).toBe(soc);
+      expect(card.dream_job_label, job).toEqual(dreamJobLabel(job));
+    }
+  });
+
+  it('"engineer" alone stays an unlabeled title match', () => {
+    expect(cardOne("engineer")).toMatchObject({ soc: "17-2081", dream_job_label: null });
+    expect(cardOne("engineer").breakdown.title_match).toBe("title");
+  });
+
+  it('"aerospace engineer" in conflict mode is a labeled closest match, not real_path', () => {
+    const f = fixture("student_05");
+    const [first] = cardsOf(
+      selectFromInput({ ...toMatchInput(f.filters, f.quiz), dream_job: "aerospace engineer", avoid_flags: [] }, occupations),
+    );
+    expect(first).toMatchObject({
+      soc: "17-2081",
+      slot: "closest_match",
+      dream_job_label: dreamJobLabel("aerospace engineer"),
+    });
+  });
+
   it('"nurse practitioner" gives Nurse Practitioners as card 1 with no label', () => {
     expect(cardOne("nurse practitioner")).toMatchObject({ soc: "29-1171", slot: "direct", dream_job_label: null });
   });
