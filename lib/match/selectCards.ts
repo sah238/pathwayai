@@ -51,7 +51,7 @@ export const NUDGE_MESSAGE =
  */
 export type Slot = "direct" | "two_year" | "adjacent" | "real_path" | "closest_match" | "short_training";
 
-/** Fixed wording shown on a closest_match card. `typed` is the student's Q1 job, as entered. */
+/** Fixed wording shown on an alias-matched or closest_match card. `typed` is the student's Q1 job, as entered. */
 export interface DreamJobLabel {
   heading: string;
   note: string;
@@ -85,7 +85,7 @@ export interface Pick {
   avoid_hits: string[];
   /** Rules this slot had to relax to find a career, in the order tried. */
   fallbacks: string[];
-  /** Set only on a closest_match card. */
+  /** Set on any card matched through a dream-job alias, and on a closest_match card when the student named a job. */
   dream_job_label: DreamJobLabel | null;
 }
 
@@ -215,14 +215,7 @@ export function selectFromInput(input: MatchInput, occupations: Occupation[]): S
     const top = take(best(scored, notTaken, [], "real_path"), "real path");
     // Only a roster title match is the real path. An alias (or no match) is
     // just the closest career we have, and says so when the student named a job.
-    const real: Pick =
-      top.breakdown.title_match === "title"
-        ? top
-        : {
-            ...top,
-            slot: "closest_match",
-            dream_job_label: input.dream_job ? dreamJobLabel(input.dream_job) : null,
-          };
+    const real: Pick = top.breakdown.title_match === "title" ? top : { ...top, slot: "closest_match" };
 
     // Short training: at most a postsecondary nondegree award and Job Zone 3,
     // or the student's own ceiling where it is higher (null = no limit).
@@ -240,7 +233,7 @@ export function selectFromInput(input: MatchInput, occupations: Occupation[]): S
       test: (s) => ![real.soc, alt1.soc].map(majorGroup).includes(majorGroup(s.occ.soc_code)),
     };
     const alt2 = take(best(scored, short, [noAvoid, otherField], "short_training"), "second short-training");
-    return { kind: "cards", mode: "conflict", cards: [real, alt1, alt2] };
+    return { kind: "cards", mode: "conflict", cards: labeled(input, [real, alt1, alt2]) };
   }
 
   const eligible = (s: Scored) => notTaken(s) && withinCeilings(s.occ, input.max_education, input.job_zone_ceiling);
@@ -269,5 +262,17 @@ export function selectFromInput(input: MatchInput, occupations: Occupation[]): S
     "adjacent",
   );
 
-  return { kind: "cards", mode: "standard", cards: [direct, twoYear, adjacent] };
+  return { kind: "cards", mode: "standard", cards: labeled(input, [direct, twoYear, adjacent]) };
+}
+
+/**
+ * Adds the closest-match label to every card the dream job reached only
+ * through a draft alias, and to a closest_match card when the student named a
+ * job. Title matches (including singular forms) stay unlabeled.
+ */
+function labeled(input: MatchInput, cards: [Pick, Pick, Pick]): [Pick, Pick, Pick] {
+  const needsLabel = (c: Pick) => c.breakdown.title_match === "alias" || c.slot === "closest_match";
+  return cards.map((c) =>
+    input.dream_job && needsLabel(c) ? { ...c, dream_job_label: dreamJobLabel(input.dream_job) } : c,
+  ) as [Pick, Pick, Pick];
 }

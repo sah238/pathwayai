@@ -8,8 +8,9 @@
  * key is matched as whole words, ignoring case.
  *
  * An alias match is only "closest in our list", never the student's actual
- * job: a conflict card found this way is labeled closest_match, not real_path
- * (see selectCards.ts, dreamJobLabel).
+ * job: every card matched this way carries the closest-match label, and a
+ * conflict card 1 found this way is closest_match, not real_path (see
+ * selectCards.ts, dreamJobLabel).
  */
 export const DREAM_JOB_ALIASES: Record<string, readonly string[]> = {
   surgeon: ["29-1071", "29-1171"],

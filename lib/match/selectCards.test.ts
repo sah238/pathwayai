@@ -172,10 +172,49 @@ describe("dream-job title and alias matching", () => {
     expect(titleMatch("Encoder", occ("15-1252"))).toBeNull();
   });
 
-  it("student_04 (Cybersecurity Analyst) gets software developers as the direct match", () => {
+  it("student_04 (Cybersecurity Analyst) gets software developers as the direct match, labeled as closest", () => {
     const f = fixture("student_04");
     const [direct] = cardsOf(selectCards(f.filters, f.quiz, occupations));
-    expect(direct).toMatchObject({ soc: "15-1252", slot: "direct", dream_job_label: null });
+    expect(direct).toMatchObject({
+      soc: "15-1252",
+      slot: "direct",
+      dream_job_label: {
+        heading: "Closest career in our list to Cybersecurity Analyst",
+        note: "Cybersecurity Analyst isn't in our career data yet.",
+      },
+    });
+  });
+
+  it("labels alias-matched standard cards (student_02 nurse, student_09 chef)", () => {
+    for (const [id, soc, typed] of [
+      ["student_02", "29-1141", "Pediatric Nurse"],
+      ["student_09", "35-2014", "Chef or Restaurant Manager"],
+    ] as const) {
+      const f = fixture(id);
+      const [direct] = cardsOf(selectCards(f.filters, f.quiz, occupations));
+      expect(direct.soc).toBe(soc);
+      expect(direct.breakdown.title_match).toBe("alias");
+      expect(direct.dream_job_label).toEqual(dreamJobLabel(typed));
+    }
+  });
+
+  it("leaves title matches unlabeled (student_01 Electrician)", () => {
+    const f = fixture("student_01");
+    const [direct] = cardsOf(selectCards(f.filters, f.quiz, occupations));
+    expect(direct.breakdown.title_match).toBe("title");
+    expect(direct.dream_job_label).toBeNull();
+  });
+
+  it("every fixture card is labeled exactly when it is an alias match or a closest match", () => {
+    for (const f of fixtures.filter((x) => x.filters.is_career_query)) {
+      for (const c of cardsOf(selectCards(f.filters, f.quiz, occupations))) {
+        const expected =
+          f.quiz.q1_dream_job.job && (c.breakdown.title_match === "alias" || c.slot === "closest_match")
+            ? dreamJobLabel(f.quiz.q1_dream_job.job)
+            : null;
+        expect(c.dream_job_label, `${f.id} ${c.soc}`).toEqual(expected);
+      }
+    }
   });
 });
 
