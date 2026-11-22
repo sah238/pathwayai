@@ -38,6 +38,14 @@ export interface InstitutionView {
   sources: InstitutionSources;
 }
 
+/** Why a provider is in a state's list: located there, or (sponsors only) registered there. */
+export type InstitutionMatch = "located" | "registered";
+
+export interface InstitutionListItem extends InstitutionView {
+  /** "located" when location.state matches (or no state was asked for). */
+  match: InstitutionMatch;
+}
+
 /** One local program (or apprenticeship) for a career, joined to its provider. */
 export interface InstitutionProgram {
   record_id: string;
@@ -88,8 +96,12 @@ export interface DataRepository {
   /** State percentiles when all five exist (employment may be null), else national. Null for an unknown SOC. */
   getAreaWages(soc: string, state: DmvState | null): WageLookup | null;
   // InstitutionProgram
-  /** Providers located in `state` (by location.state), or all when null. */
-  listInstitutions(state: DmvState | null): InstitutionView[];
+  /**
+   * Providers for `state`: located there (location.state), or apprenticeship
+   * sponsors registered there (apprenticeship.registered_in). "located" wins
+   * when both hold. All providers, as "located", when state is null.
+   */
+  listInstitutions(state: DmvState | null): InstitutionListItem[];
   getInstitution(recordId: string): InstitutionView | null;
   /** Null for an unknown SOC; empty lists when there is no local program. */
   programsForOccupation(soc: string): ProgramsForOccupation | null;
@@ -169,7 +181,11 @@ export function createRepository(occFile: OccupationsFile, instFile: Institution
     },
 
     listInstitutions: (state) =>
-      instFile.institutions.filter((i) => state === null || i.location.state === state).map(view),
+      instFile.institutions.flatMap((inst): InstitutionListItem[] => {
+        if (state === null || inst.location.state === state) return [{ ...view(inst), match: "located" }];
+        if (inst.apprenticeship?.registered_in.includes(state)) return [{ ...view(inst), match: "registered" }];
+        return [];
+      }),
     getInstitution(recordId) {
       const inst = instById.get(recordId);
       return inst ? view(inst) : null;

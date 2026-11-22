@@ -61,10 +61,43 @@ describe("AreaWages", () => {
 });
 
 describe("listInstitutions / getInstitution", () => {
-  it("filters by location.state", () => {
-    const counts = Object.fromEntries((["DC", "MD", "VA"] as const).map((s) => [s, repo.listInstitutions(s).length]));
-    expect(counts).toEqual({ DC: 2, MD: 12, VA: 6 });
-    expect(repo.listInstitutions("VA").every((v) => v.institution.location.state === "VA")).toBe(true);
+  const matches = (state: "DC" | "MD" | "VA") =>
+    Object.fromEntries(repo.listInstitutions(state).map((v) => [v.institution.record_id, v.match]));
+  const SPONSORS = ["APPR-IBEW26", "APPR-SM602", "APPR-SMART100", "APPR-MACTC"];
+
+  it("VA includes IBEW 26 and SMART 100 as registered sponsors", () => {
+    const va = matches("VA");
+    expect(va["APPR-IBEW26"]).toBe("registered");
+    expect(va["APPR-SMART100"]).toBe("registered");
+    expect(va["APPR-SM602"]).toBeUndefined();
+    expect(va["APPR-MACTC"]).toBeUndefined();
+    const located = repo.listInstitutions("VA").filter((v) => v.match === "located");
+    expect(located).toHaveLength(6);
+    expect(located.every((v) => v.institution.location.state === "VA")).toBe(true);
+  });
+
+  it("DC includes all 4 sponsors as registered, plus the 2 DC schools as located", () => {
+    const dc = matches("DC");
+    for (const id of SPONSORS) expect(dc[id], id).toBe("registered");
+    expect(Object.values(dc).filter((m) => m === "located")).toHaveLength(2);
+  });
+
+  it("prefers located over registered (sponsors are in MD)", () => {
+    const md = matches("MD");
+    for (const id of SPONSORS) expect(md[id], id).toBe("located");
+    expect(Object.keys(md)).toHaveLength(12);
+  });
+
+  it("only sponsors match as registered; null state returns all 20 as located", () => {
+    for (const s of ["DC", "MD", "VA"] as const) {
+      for (const v of repo.listInstitutions(s).filter((x) => x.match === "registered")) {
+        expect(v.institution.provider_type).toBe("Registered apprenticeship sponsor (RAPIDS)");
+        expect(v.institution.apprenticeship?.registered_in).toContain(s);
+      }
+    }
+    const all = repo.listInstitutions(null);
+    expect(all).toHaveLength(20);
+    expect(all.every((v) => v.match === "located")).toBe(true);
   });
 
   it("takes sources from each record's provenance", () => {
