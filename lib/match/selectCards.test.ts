@@ -216,13 +216,18 @@ describe("dream-job title and alias matching", () => {
 
   it("a one-word lay title inside a longer phrase counts like an alias", () => {
     expect(matches("aerospace engineer")).toEqual({ "17-2081": "alias" });
-    expect(matches("car mechanic")).toEqual({ "49-9041": "alias" });
+    expect(matches("diesel mechanic")).toEqual({ "49-9041": "alias" });
     expect(matches("tattoo artist")).toEqual({ "27-1024": "alias" });
+  });
+
+  it('"car mechanic" alias (longer) beats the one-word lay title "Mechanic"', () => {
+    expect(matches("car mechanic")).toEqual({ "49-3023": "alias" });
+    expect(matches("Car Mechanic at a dealership")).toEqual({ "49-3023": "alias" });
   });
 
   it('"car mechanic" and "tattoo artist" get the closest-match label', () => {
     for (const [job, soc] of [
-      ["car mechanic", "49-9041"],
+      ["car mechanic", "49-3023"],
       ["tattoo artist", "27-1024"],
     ] as const) {
       const card = cardOne(job);

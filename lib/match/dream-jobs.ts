@@ -23,4 +23,6 @@ export const DREAM_JOB_ALIASES: Record<string, readonly string[]> = {
   cybersecurity: ["15-1252"],
   programmer: ["15-1252"],
   coder: ["15-1252"],
+  // Longer than the one-word lay title "Mechanic" (Industrial Machinery Mechanics), so it wins.
+  "car mechanic": ["49-3023"],
 };
