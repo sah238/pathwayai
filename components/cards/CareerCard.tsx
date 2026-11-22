@@ -12,6 +12,7 @@ import type { WagePercentiles } from "@/lib/data/lookup";
 import { Badge } from "./Badge";
 import { ExpandPanel } from "./ExpandPanel";
 import { Factor } from "./Factor";
+import { FIT_INTERESTS_INTRO, FIT_VALUES_INTRO, type CardExtras } from "./personalize";
 import { STATE_NAMES, usd } from "./format";
 import { SourceNote } from "./SourceNote";
 
@@ -194,10 +195,12 @@ interface CareerCardProps {
   /** Expand layer open for this card (one card at a time). */
   open: boolean;
   onToggle: () => void;
+  /** From the quiz (in memory only): selection label, "Why it fits you", summary. Absent after a refresh. */
+  extras?: CardExtras;
 }
 
 /** Glance layer (factors 1–4) plus the Expand toggle. Cards share rows (subgrid) so factors line up. */
-export function CareerCard({ card, zip, tier, open, onToggle }: CareerCardProps) {
+export function CareerCard({ card, zip, tier, open, onToggle, extras }: CareerCardProps) {
   const wages = selectWages(card, zip);
   const panelId = `expand-${card.soc}`;
   return (
@@ -206,23 +209,71 @@ export function CareerCard({ card, zip, tier, open, onToggle }: CareerCardProps)
     <article aria-labelledby={`card-${card.soc}`} className="row-span-6 grid grid-rows-subgrid gap-0">
       <div className="row-span-5 grid grid-rows-subgrid gap-0 overflow-hidden rounded-t-xl border border-b-0 border-zinc-300 bg-white dark:border-zinc-700 dark:bg-zinc-950">
       <header className="p-4">
+        {extras && (
+          <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-blue-800 dark:text-blue-300">
+            {extras.label.kicker}
+          </p>
+        )}
         <h2 id={`card-${card.soc}`} className="text-xl font-semibold">
           {card.title.value}
         </h2>
         <p className="mt-1 flex items-center gap-2 text-xs text-zinc-600 dark:text-zinc-400">
           SOC {card.soc} <SourceNote source={card.title.source} />
         </p>
+        {extras?.label.heading && (
+          <div className="mt-2 rounded-lg bg-amber-50 p-2 text-sm text-amber-900 dark:bg-amber-950 dark:text-amber-100">
+            <p className="font-medium">{extras.label.heading}</p>
+            {extras.label.note && <p className="text-xs">{extras.label.note}</p>}
+          </div>
+        )}
       </header>
 
       <Factor n={1} title="A day in this job">
-        <ul className="list-disc space-y-1 pl-5">
-          {card.tasks.value.map((t) => (
-            <li key={t}>{t}</li>
-          ))}
-        </ul>
-        <SourceNote source={card.tasks.source} />
+        {extras?.summary ? (
+          <>
+            <p>{extras.summary.summary}</p>
+            <p className="text-xs text-zinc-600 dark:text-zinc-400">
+              Written by AI from O*NET&rsquo;s task list for this career.
+            </p>
+            <SourceNote source={extras.summary.source} />
+          </>
+        ) : (
+          <>
+            <ul className="list-disc space-y-1 pl-5">
+              {card.tasks.value.map((t) => (
+                <li key={t}>{t}</li>
+              ))}
+            </ul>
+            <SourceNote source={card.tasks.source} />
+          </>
+        )}
       </Factor>
 
+      {extras?.fit ? (
+        <Factor n={2} title="Why it fits you">
+          {extras.fit.values.length > 0 && (
+            <>
+              <p>{FIT_VALUES_INTRO}</p>
+              <ul className="list-disc space-y-1 pl-5">
+                {extras.fit.values.map((v) => (
+                  <li key={v}>{v}</li>
+                ))}
+              </ul>
+            </>
+          )}
+          {extras.fit.interests.length > 0 && (
+            <>
+              <p>{FIT_INTERESTS_INTRO}</p>
+              <ul className="list-disc space-y-1 pl-5">
+                {extras.fit.interests.map((i) => (
+                  <li key={i}>{i}</li>
+                ))}
+              </ul>
+            </>
+          )}
+          <SourceNote source={card.rewards.source} />
+        </Factor>
+      ) : (
       <Factor n={2} title="What this job rewards">
         {card.rewards.status === "rated" ? (
           <>
@@ -242,6 +293,7 @@ export function CareerCard({ card, zip, tier, open, onToggle }: CareerCardProps)
           </>
         )}
       </Factor>
+      )}
 
       <Factor n={3} title="Pay">
         <Pay wages={wages} zip={zip} />

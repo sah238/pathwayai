@@ -1,24 +1,23 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { primaryButton, secondaryButton } from "./buttons";
 import { ProgressBar } from "./controls";
+import { FinishScreen, type FinishOutcome } from "./FinishScreen";
+import { setHandoff } from "./recommend-store";
+import { resultsUrl, submitQuiz } from "./submit";
 import { buildQuizResponses, canAdvance, followUpsFor, initialState, makeOrder, type QuizState } from "./logic";
 import { TOTAL_QUESTIONS } from "./questions";
 import { FollowUpScreen, HEADING_ID, promptFor, QuestionScreen } from "./screens";
 
 const LAST_QUESTION = TOTAL_QUESTIONS - 1;
 
-const primaryButton =
-  "min-h-12 rounded-full bg-blue-700 px-6 text-base font-semibold text-white hover:bg-blue-800 " +
-  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700 " +
-  "disabled:cursor-not-allowed disabled:bg-zinc-400 dark:disabled:bg-zinc-600";
-const secondaryButton =
-  "min-h-12 rounded-full border border-zinc-400 px-6 text-base font-semibold hover:bg-zinc-100 " +
-  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700 dark:hover:bg-zinc-800";
-
 /**
- * The values quiz. Answers live only in this component's state: nothing is
- * written to storage, cookies or the server.
+ * The values quiz. Answers live only in this component's state and are never
+ * written to storage or cookies. At Finish they are sent once to
+ * /api/recommend (request body only), and the results page link carries only
+ * the three career codes.
  */
 export function Quiz() {
   // null until "Start": the shuffled order is made in a click handler, so the
@@ -27,6 +26,8 @@ export function Quiz() {
   const [rawStep, setStep] = useState(0);
   const [seed, setSeed] = useState(0);
   const [finished, setFinished] = useState(false);
+  const [outcome, setOutcome] = useState<FinishOutcome>({ kind: "loading" });
+  const router = useRouter();
   const headingRef = useRef<HTMLHeadingElement>(null);
   const moved = useRef(false);
   const started = quiz !== null;
@@ -34,7 +35,7 @@ export function Quiz() {
   useEffect(() => {
     // Move focus to the new question so screen readers announce it.
     if (moved.current) headingRef.current?.focus();
-  }, [rawStep, finished, started]);
+  }, [rawStep, finished, started, outcome]);
 
   const goTo = (next: number) => {
     moved.current = true;
@@ -78,29 +79,36 @@ export function Quiz() {
   const step = Math.min(rawStep, lastStep);
   const followUp = step > LAST_QUESTION ? followUps[step - LAST_QUESTION - 1] : undefined;
 
-  const finish = () => {
+  const finish = async () => {
     const responses = buildQuizResponses(quiz);
-    // TODO(session 9): hand `responses` to /api/extract here, in memory only.
-    void responses;
     moved.current = true;
     setFinished(true);
+    setOutcome({ kind: "loading" });
+    // Answers go only in the request body; nothing is stored or logged.
+    const result = await submitQuiz(responses);
+    if (result.kind === "cards") {
+      setHandoff({ socs: result.socs, zip: responses.q11_zip_code, cards: result.cards });
+      router.push(resultsUrl(result.socs));
+      return;
+    }
+    moved.current = true;
+    setOutcome(result);
   };
 
   if (finished) {
+    const backToAnswers = () => {
+      moved.current = true;
+      setFinished(false);
+    };
     return (
       <Shell>
-        <h1 ref={headingRef} tabIndex={-1} className="text-3xl font-bold tracking-tight outline-none">
-          Thanks, that&apos;s everything!
-        </h1>
-        <p className="text-lg text-zinc-700 dark:text-zinc-300">Your career matches will show up here soon.</p>
-        <div className="flex gap-3">
-          <button type="button" className={secondaryButton} onClick={() => { moved.current = true; setFinished(false); }}>
-            Back to my answers
-          </button>
-          <button type="button" className={secondaryButton} onClick={start}>
-            Start over
-          </button>
-        </div>
+        <FinishScreen
+          outcome={outcome}
+          headingRef={headingRef}
+          onBack={backToAnswers}
+          onStartOver={start}
+          onRetry={() => void finish()}
+        />
       </Shell>
     );
   }
@@ -123,7 +131,7 @@ export function Quiz() {
         onSubmit={(e) => {
           e.preventDefault();
           if (!ok) return;
-          if (isLast) finish();
+          if (isLast) void finish();
           else goTo(step + 1);
         }}
       >

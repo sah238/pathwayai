@@ -5,6 +5,7 @@
  */
 import Anthropic from "@anthropic-ai/sdk";
 import { createExtractHandler } from "@/lib/extract/handler";
+import { withRateLimit } from "@/lib/rate-limit";
 
 let client: Anthropic | null = null;
 
@@ -15,4 +16,5 @@ function getClient(): Anthropic | null {
   return client;
 }
 
-export const POST = createExtractHandler(getClient);
+// Per-IP limit; per serverless instance only (see lib/rate-limit.ts).
+export const POST = withRateLimit(createExtractHandler(getClient));

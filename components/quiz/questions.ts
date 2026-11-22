@@ -5,6 +5,7 @@
  * (hyphen, as in the fixtures) and displays the doc's en dash.
  */
 import { Q4_OPTIONS, type Q4Label } from "@/lib/data/constants";
+import { OUTSIDE_REGION_ZIP_MESSAGE } from "@/lib/shared-text";
 
 export const TOTAL_QUESTIONS = 11;
 
@@ -221,11 +222,8 @@ export const Q10 = {
 export const Q11 = {
   prompt: "What's your ZIP code? (Optional)",
   helper: "We use this to show pay, jobs and in-state school costs near you. We don't save it.",
-  /**
-   * Word for word the results page's message (app/results/ResultsClient.tsx,
-   * "outside_region"), so students see the same wording in both places.
-   */
-  outsideRegion: "This ZIP is outside DC, Maryland and Virginia, so national wages are shown.",
+  /** Shared with the results page's ZIP box (lib/shared-text.ts). */
+  outsideRegion: OUTSIDE_REGION_ZIP_MESSAGE,
 } as const;
 
 // Follow-ups -------------------------------------------------------------
