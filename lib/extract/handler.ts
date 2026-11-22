@@ -24,15 +24,43 @@ function hasLongText(value: unknown): boolean {
   return false;
 }
 
+/**
+ * Reads the body as UTF-8 text, stopping and cancelling the stream as soon as
+ * more than `limit` bytes arrive. Returns null when the limit is passed. Does
+ * not trust Content-Length.
+ */
+export async function readBodyWithLimit(request: Request, limit: number): Promise<string | null> {
+  if (!request.body) return "";
+  const reader = request.body.getReader();
+  const chunks: Uint8Array[] = [];
+  let total = 0;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    total += value.byteLength;
+    if (total > limit) {
+      await reader.cancel();
+      return null;
+    }
+    chunks.push(value);
+  }
+  const bytes = new Uint8Array(total);
+  let offset = 0;
+  for (const c of chunks) {
+    bytes.set(c, offset);
+    offset += c.byteLength;
+  }
+  return new TextDecoder().decode(bytes);
+}
+
 export function createExtractHandler(getClient: () => MessagesClient | null) {
   return async function POST(request: Request): Promise<Response> {
+    // Cheap early reject; the streaming read below is the real limit.
     const declared = Number(request.headers.get("content-length") ?? 0);
     if (declared > MAX_BODY_BYTES) return error(413, "request_too_large");
 
-    const raw = await request.text();
-    if (new TextEncoder().encode(raw).length > MAX_BODY_BYTES) {
-      return error(413, "request_too_large");
-    }
+    const raw = await readBodyWithLimit(request, MAX_BODY_BYTES);
+    if (raw === null) return error(413, "request_too_large");
 
     let body: unknown;
     try {

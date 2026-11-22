@@ -13,7 +13,10 @@ import { trainingCeiling } from "./training";
 
 /** Fast, low-cost model for both stages (CLAUDE.md, Technical Architecture). */
 export const EXTRACT_MODEL = "claude-haiku-5-5";
-/** Covers adaptive thinking plus a short JSON object. */
+/**
+ * Room for a short JSON object. The request sets no `thinking` parameter, so
+ * any thinking is the model's default and also counts against this cap.
+ */
 export const EXTRACT_MAX_TOKENS = 2048;
 
 /** Only the part of the SDK client this module uses, so tests can fake it. */

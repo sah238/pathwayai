@@ -7,7 +7,7 @@
  * Both values are ceilings: a student who picks "About 4 years" can still be
  * matched to shorter paths.
  *
- * Reviewed with the team on 2026-11-22:
+ * Approved by Sophie on 2026-11-22:
  * - "Start working right away" allows Job Zone 3 so that apprenticeships that
  *   need only a high school diploma (for example electricians) stay visible;
  *   the education ceiling still screens out associate's-degree roles.

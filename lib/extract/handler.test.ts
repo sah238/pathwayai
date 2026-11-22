@@ -82,6 +82,53 @@ describe("POST /api/extract", () => {
     expect(create).not.toHaveBeenCalled();
   });
 
+  it("stops reading and returns 413 past 8 KB when there is no Content-Length", async () => {
+    const { POST, create } = setup();
+    const chunk = new TextEncoder().encode("x".repeat(1024));
+    let pulled = 0;
+    let cancelled = false;
+    const body = new ReadableStream<Uint8Array>({
+      pull(controller) {
+        pulled++;
+        controller.enqueue(chunk); // endless stream: only the limit can stop it
+      },
+      cancel() {
+        cancelled = true;
+      },
+    });
+    const req = new Request("http://localhost/api/extract", {
+      method: "POST",
+      body,
+      duplex: "half",
+    } as RequestInit);
+    expect(req.headers.get("content-length")).toBeNull();
+
+    const res = await POST(req);
+    expect(res.status).toBe(413);
+    expect(cancelled).toBe(true);
+    expect(pulled).toBeLessThanOrEqual(MAX_BODY_BYTES / chunk.byteLength + 2);
+    expect(create).not.toHaveBeenCalled();
+  });
+
+  it("accepts a valid streamed body with no Content-Length", async () => {
+    const { POST } = setup();
+    const bytes = new TextEncoder().encode(JSON.stringify(student01));
+    const body = new ReadableStream<Uint8Array>({
+      start(controller) {
+        controller.enqueue(bytes.slice(0, 100));
+        controller.enqueue(bytes.slice(100));
+        controller.close();
+      },
+    });
+    const req = new Request("http://localhost/api/extract", {
+      method: "POST",
+      body,
+      duplex: "half",
+    } as RequestInit);
+    expect(req.headers.get("content-length")).toBeNull();
+    expect((await POST(req)).status).toBe(200);
+  });
+
   it("caps each text answer", async () => {
     const { POST, create } = setup();
     const long = { ...student01, q3_asked_for_help: "a".repeat(MAX_TEXT_CHARS + 1) };
