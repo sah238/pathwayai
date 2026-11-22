@@ -124,8 +124,8 @@ describe("check 4: privacy", () => {
     expect(hits).toEqual([]);
   });
 
-  // FAIL F3 in docs/test-report.md. Remove `.fails` when s10-fixes handles typed personal details.
-  it.fails("ZIP, income and demographics typed into a free-text answer never reach Claude", async () => {
+  // F3 in docs/test-report.md, fixed on s10-fixes by lib/extract/redact.ts.
+  it("ZIP, income and demographics typed into a free-text answer never reach Claude", async () => {
     const f = fixture("student_01");
     const typed = "My ZIP is 20910, my family makes $40,000 a year, and I am a Latina girl.";
     const quiz: QuizResponses = {

@@ -1,11 +1,13 @@
 /**
  * Stage 1 prompt. The system prompt is fixed text: student answers never go
  * in it (CLAUDE.md, Operations). The user message carries the quiz answers
- * minus the ZIP code; family income and demographics are not in
- * QuizResponses, so they cannot reach the API from here.
+ * minus the ZIP code. Family income and demographics are not fields in
+ * QuizResponses. If a student types them into an answer, ./redact.ts removes
+ * the obvious patterns, but it cannot catch every phrasing.
  */
 import { Q4_OPTIONS } from "@/lib/data/constants";
 import type { QuizResponses } from "@/lib/quiz/responses";
+import { redactFreeText } from "./redact";
 import { RIASEC_CODES, WorkContextSchema, WorkValueSchema } from "./schema";
 
 const q4Lines = Q4_OPTIONS.map((o) => `- "${o.label}" -> ${o.value}`).join("\n");
@@ -24,9 +26,9 @@ ${q4Lines}
 
 When is_career_query is false, return empty lists and has_constraint_conflict false. Do not output numbers, wages, years or education levels; the app computes those.`;
 
-/** Builds the user message: the quiz answers without the ZIP code. */
+/** Builds the user message: the quiz answers without the ZIP code, with typed personal details redacted. */
 export function buildUserMessage(responses: QuizResponses): string {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { q11_zip_code, ...answers } = responses;
+  const { q11_zip_code, ...answers } = redactFreeText(responses);
   return `<quiz_answers>\n${JSON.stringify(answers, null, 2)}\n</quiz_answers>`;
 }
