@@ -5,7 +5,7 @@ import { Badge } from "./Badge";
 export function SourceNote({ source }: { source: Source | null }) {
   if (!source) return <Badge tone="warn">Source not listed</Badge>;
   const label = source.data_vintage ? `${source.source}, ${source.data_vintage}` : source.source;
-  const cls = "text-xs text-zinc-600 underline decoration-dotted underline-offset-2 dark:text-zinc-400";
+  const cls = "text-xs text-body underline decoration-dotted underline-offset-2 hover:text-bright-blue";
   return source.source_url ? (
     <a href={source.source_url} className={cls} title={label} target="_blank" rel="noopener noreferrer">
       Source<span className="sr-only">: {label} (opens in a new tab)</span>

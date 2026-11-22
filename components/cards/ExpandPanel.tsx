@@ -26,8 +26,8 @@ function CouldI({ card }: { card: CardViewModel }) {
         <span className="font-medium">First step from high school:</span> {first_step.text}{" "}
         <SourceNote source={first_step.pathway.source} />
       </p>
-      <p className="text-xs text-zinc-500 dark:text-zinc-400">Wording: {first_step.review_status.toLowerCase()}.</p>
-      <p className="rounded-lg bg-emerald-50 p-2 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-100">
+      <p className="text-xs text-georgetown-gray">Wording: {first_step.review_status.toLowerCase()}.</p>
+      <p className="rounded-lg bg-highlight p-2 text-georgetown-blue">
         {NEVER_TOO_LATE}
       </p>
     </Factor>
@@ -42,7 +42,7 @@ function WorkEnvironment({ card }: { card: CardViewModel }) {
         <>
           <ul className="flex flex-wrap gap-2">
             {env.labels.map((l) => (
-              <li key={l} className="rounded-full border border-zinc-300 px-2 py-0.5 dark:border-zinc-700">
+              <li key={l} className="rounded-full border border-light-gray px-2 py-0.5">
                 {WORK_ENV_TEXT[l] ?? l}
               </li>
             ))}
@@ -52,7 +52,7 @@ function WorkEnvironment({ card }: { card: CardViewModel }) {
       ) : (
         <>
           <Badge tone="warn">{env.badge}</Badge>
-          <p className="text-zinc-600 dark:text-zinc-400">
+          <p className="text-body">
             Work environment details for this career aren&rsquo;t in our data yet.
           </p>
         </>
@@ -67,30 +67,30 @@ function Outlook({ card }: { card: CardViewModel }) {
   return (
     <Factor n={9} title="Outlook and AI">
       <dl className="grid grid-cols-[1fr_auto] gap-x-3 gap-y-1">
-        <dt className="text-zinc-600 dark:text-zinc-400">Jobs, 2025 to 2035 (U.S.)</dt>
+        <dt className="text-body">Jobs, 2025 to 2035 (U.S.)</dt>
         <dd className="text-right font-semibold tabular-nums">{signedPct(o.job_growth_pct)}</dd>
-        <dt className="text-zinc-600 dark:text-zinc-400">{more ? "New jobs" : "Fewer jobs"}</dt>
+        <dt className="text-body">{more ? "New jobs" : "Fewer jobs"}</dt>
         <dd className="text-right tabular-nums">{thousands(o.job_change_k)}</dd>
-        <dt className="text-zinc-600 dark:text-zinc-400">Openings per year</dt>
+        <dt className="text-body">Openings per year</dt>
         <dd className="text-right tabular-nums">{thousands(o.annual_openings_k)}</dd>
-        <dt className="text-zinc-600 dark:text-zinc-400">BLS AI exposure</dt>
+        <dt className="text-body">BLS AI exposure</dt>
         <dd className="text-right font-semibold">{o.ai_exposure_tier.value}</dd>
       </dl>
       <p className="flex flex-wrap gap-2">
         <SourceNote source={o.source} />
         <SourceNote source={o.ai_exposure_tier.source} />
       </p>
-      <p className="text-xs text-zinc-600 dark:text-zinc-400">
+      <p className="text-xs text-body">
         AI exposure tiers rank jobs against each other. They are not forecasts, and they don&rsquo;t say whether AI
         will replace tasks or help people do them.
       </p>
       {o.early_career && (
-        <div className="space-y-1 rounded-lg border border-amber-300 p-2 dark:border-amber-700">
+        <div className="space-y-1 rounded-lg border border-warn-line bg-warn-tint p-2">
           <Badge tone="warn">{o.early_career.badge}</Badge>
           <p>{o.early_career.text}</p>
-          <p className="text-xs text-zinc-600 dark:text-zinc-400">{o.early_career.reason}</p>
+          <p className="text-xs text-body">{o.early_career.reason}</p>
           <SourceNote source={o.early_career.source} />
-          <p className="text-xs text-zinc-500 dark:text-zinc-400">
+          <p className="text-xs text-georgetown-gray">
             Wording: {o.early_career.wording_status.toLowerCase()}.
           </p>
         </div>
@@ -102,7 +102,7 @@ function Outlook({ card }: { card: CardViewModel }) {
 function Location({ card, zip }: { card: CardViewModel; zip: ZipStatus }) {
   let body;
   if (zip.kind === "none" || zip.kind === "incomplete") {
-    body = <p className="text-zinc-600 dark:text-zinc-400">Enter a ZIP code above to see details for your state.</p>;
+    body = <p className="text-body">Enter a ZIP code above to see details for your state.</p>;
   } else if (zip.kind === "outside_region") {
     body = (
       <>
@@ -138,7 +138,7 @@ function Location({ card, zip }: { card: CardViewModel; zip: ZipStatus }) {
           </p>
         )}
         {card.path.programs.length > 0 && (
-          <p className="text-zinc-600 dark:text-zinc-400">
+          <p className="text-body">
             {serving
               ? `Programs that serve ${name} are listed first under “Path to get there.”`
               : `None of the local programs listed are in or registered in ${name}.`}

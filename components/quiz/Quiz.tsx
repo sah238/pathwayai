@@ -2,7 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { primaryButton, secondaryButton } from "./buttons";
+import { buttonStyles } from "@/components/ui/button";
+import { pageIntro, pageTitle } from "@/components/ui/surface";
 import { ProgressBar } from "./controls";
 import { FinishScreen, type FinishOutcome } from "./FinishScreen";
 import { setHandoff } from "./recommend-store";
@@ -55,17 +56,17 @@ export function Quiz() {
   if (quiz === null) {
     return (
       <Shell>
-        <h1 ref={headingRef} tabIndex={-1} className="text-3xl font-bold tracking-tight outline-none">
+        <h1 ref={headingRef} tabIndex={-1} className={pageTitle}>
           Find careers that fit you
         </h1>
-        <p className="text-lg text-zinc-700 dark:text-zinc-300">
+        <p className={pageIntro}>
           Answer {TOTAL_QUESTIONS} quick questions about what you like and what matters to you. It takes about 5
           minutes. There are no right or wrong answers.
         </p>
-        <p className="text-base text-zinc-700 dark:text-zinc-300">
+        <p className="text-base text-body">
           We don&apos;t ask for your name, and your answers aren&apos;t saved.
         </p>
-        <button type="button" className={`${primaryButton} self-start`} onClick={start}>
+        <button type="button" className={`${buttonStyles.primary} self-start`} onClick={start}>
           Start the quiz
         </button>
       </Shell>
@@ -139,7 +140,7 @@ export function Quiz() {
           id={HEADING_ID}
           ref={headingRef}
           tabIndex={-1}
-          className="text-2xl font-bold leading-snug tracking-tight outline-none"
+          className="font-display text-[clamp(1.625rem,5vw,2rem)] leading-tight font-bold tracking-[-0.5px] text-georgetown-blue"
         >
           {promptFor(step, quiz, followUp)}
         </h1>
@@ -157,15 +158,15 @@ export function Quiz() {
             }}
           />
         )}
-        <div className="flex items-center justify-between gap-3 border-t border-zinc-200 pt-4 dark:border-zinc-700">
+        <div className="flex items-center justify-between gap-3 border-t border-light-gray pt-4">
           {step > 0 ? (
-            <button type="button" className={secondaryButton} onClick={() => goTo(step - 1)}>
+            <button type="button" className={buttonStyles.secondary} onClick={() => goTo(step - 1)}>
               Back
             </button>
           ) : (
             <span />
           )}
-          <button type="submit" className={primaryButton} disabled={!ok}>
+          <button type="submit" className={buttonStyles.compact} disabled={!ok}>
             {isLast ? "Finish" : "Next"}
           </button>
         </div>
@@ -176,6 +177,6 @@ export function Quiz() {
 
 function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <main className="mx-auto flex w-full max-w-xl flex-1 flex-col gap-6 px-4 py-8 sm:py-12">{children}</main>
+    <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-6 px-6 py-8 sm:py-12">{children}</main>
   );
 }

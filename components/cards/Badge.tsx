@@ -3,8 +3,8 @@ import type { ReactNode } from "react";
 type Tone = "info" | "warn";
 
 const TONES: Record<Tone, string> = {
-  info: "border-sky-300 bg-sky-50 text-sky-900 dark:border-sky-700 dark:bg-sky-950 dark:text-sky-100",
-  warn: "border-amber-300 bg-amber-50 text-amber-900 dark:border-amber-700 dark:bg-amber-950 dark:text-amber-100",
+  info: "border-bright-blue bg-highlight text-georgetown-blue",
+  warn: "border-warn-line bg-warn-tint text-warn",
 };
 
 /** Missing-data and context badge. Text is always visible (not color alone). */

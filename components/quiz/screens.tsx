@@ -51,7 +51,7 @@ export function promptFor(step: number, s: QuizState, followUp: FollowUpId | und
 }
 
 const linkButton =
-  "self-start text-base font-medium text-blue-700 underline underline-offset-4 hover:text-blue-900 dark:text-blue-300";
+  "self-start text-base font-medium text-bright-blue underline underline-offset-4 hover:text-georgetown-blue";
 
 function Q1Screen({ s, update, seed }: ScreenProps) {
   const ex = pick(PLACEHOLDERS.q1Job, seed);
@@ -98,7 +98,7 @@ function Q2Screen({ s, update }: ScreenProps) {
   return (
     <fieldset className="flex flex-col gap-2">
       <legend className="sr-only">{Q2.prompt}</legend>
-      <p className="text-sm text-zinc-700 dark:text-zinc-300" aria-live="polite">
+      <p className="text-sm text-body" aria-live="polite">
         {s.q2.length} of {Q2.max} picked
       </p>
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
@@ -148,7 +148,7 @@ function Q4Screen({ s, update, onSkip }: ScreenProps & { onSkip: () => void }) {
         : "All set. Tap a card again to change it.";
   return (
     <div className="flex flex-col gap-3">
-      <p className="text-sm text-zinc-700 dark:text-zinc-300" aria-live="polite">
+      <p className="text-sm text-body" aria-live="polite">
         {hint}
       </p>
       <ul className="flex flex-col gap-2">
@@ -163,12 +163,12 @@ function Q4Screen({ s, update, onSkip }: ScreenProps & { onSkip: () => void }) {
                 onClick={() => update((st) => ({ ...st, q4: tapQ4(st.q4, label) }))}
                 className={
                   "flex min-h-12 w-full items-center justify-between gap-3 rounded-xl border px-4 py-3 text-left text-base " +
-                  "focus-visible:outline-2 focus-visible:outline-blue-700 disabled:opacity-50 " +
+                  "disabled:cursor-not-allowed disabled:bg-tint disabled:text-georgetown-gray " +
                   (b === "Matters most"
-                    ? "border-blue-700 bg-blue-50 dark:border-blue-400 dark:bg-blue-950"
+                    ? "border-bright-blue bg-highlight"
                     : b === "Matters least"
-                      ? "border-amber-700 bg-amber-50 dark:border-amber-400 dark:bg-amber-950"
-                      : "border-zinc-300 bg-white dark:border-zinc-600 dark:bg-zinc-900")
+                      ? "border-warn-line bg-warn-tint"
+                      : "border-light-gray bg-white")
                 }
               >
                 <span>{label}</span>
@@ -176,7 +176,7 @@ function Q4Screen({ s, update, onSkip }: ScreenProps & { onSkip: () => void }) {
                   <span
                     className={
                       "shrink-0 rounded-full px-2 py-0.5 text-xs font-semibold text-white " +
-                      (b === "Matters most" ? "bg-blue-700" : "bg-amber-800")
+                      (b === "Matters most" ? "bg-bright-blue" : "bg-warn")
                     }
                   >
                     {b}
@@ -288,8 +288,8 @@ function Q9Screen({ s, update, seed }: ScreenProps) {
               {c.label}
             </CheckCard>
             {open && (
-              <fieldset className="ml-4 flex flex-col gap-2 border-l-2 border-zinc-300 pl-4 dark:border-zinc-600">
-                <legend className="mb-2 text-sm text-zinc-700 dark:text-zinc-300">
+              <fieldset className="ml-4 flex flex-col gap-2 border-l-2 border-light-gray pl-4">
+                <legend className="mb-2 text-sm text-body">
                   Which {c.label.toLowerCase()} things would you avoid?
                 </legend>
                 <div className="flex flex-wrap gap-2">
@@ -335,13 +335,13 @@ function Q9Screen({ s, update, seed }: ScreenProps) {
 function Q10Screen({ s, update }: ScreenProps) {
   return (
     <div className="flex flex-col gap-4">
-      <p className="text-base text-zinc-700 dark:text-zinc-300">
+      <p className="text-base text-body">
         {Q10.helper}{" "}
         <a
           href={Q10.linkUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="font-medium text-blue-700 underline underline-offset-4 dark:text-blue-300"
+          className="font-medium text-bright-blue underline underline-offset-4"
         >
           {Q10.linkText}
           <span className="sr-only"> (opens in a new tab)</span>
@@ -373,7 +373,7 @@ function Q11Screen({ s, update }: ScreenProps) {
       <label htmlFor="q11" className="font-medium">
         ZIP code
       </label>
-      <p id="q11-help" className="text-sm text-zinc-700 dark:text-zinc-300">
+      <p id="q11-help" className="text-sm text-body">
         {Q11.helper}
       </p>
       <input
@@ -386,14 +386,14 @@ function Q11Screen({ s, update }: ScreenProps) {
         aria-describedby={describedBy}
         aria-invalid={invalid}
         onChange={(e) => update((st) => ({ ...st, q11: e.target.value.replace(/\D/g, "") }))}
-        className="w-40 rounded-xl border border-zinc-400 bg-white px-4 py-3 text-lg tracking-widest focus:border-blue-700 focus:outline-2 focus:outline-blue-700 dark:border-zinc-500 dark:bg-zinc-900"
+        className="w-40 rounded-xl border border-georgetown-gray bg-white px-4 py-3 text-lg tracking-widest focus:border-bright-blue focus:outline-2 focus:outline-bright-blue"
       />
       {invalid && (
-        <p id="q11-error" className="text-sm text-red-700 dark:text-red-400">
+        <p id="q11-error" className="text-sm text-red-700">
           A ZIP code has 5 digits. You can also leave this blank.
         </p>
       )}
-      <p id="q11-region" role="status" className="text-sm text-zinc-800 dark:text-zinc-200">
+      <p id="q11-region" role="status" className="text-sm text-georgetown-blue">
         {regionNote}
       </p>
     </div>

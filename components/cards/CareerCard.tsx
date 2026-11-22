@@ -37,7 +37,7 @@ function Pay({ wages, zip }: { wages: WageView; zip: ZipStatus }) {
       <dl className="grid grid-cols-[1fr_auto] gap-x-3 gap-y-1">
         {PAY_ROWS.map(({ key, label }) => (
           <div key={key} className="contents">
-            <dt className="text-zinc-600 dark:text-zinc-400">
+            <dt className="text-body">
               {label}
               {wages.small_sample.includes(key) && (
                 <>
@@ -57,7 +57,7 @@ function Pay({ wages, zip }: { wages: WageView; zip: ZipStatus }) {
         {wages.small_sample.length > 0 && <SourceNote source={wages.small_sample_source} />}
       </div>
       {zip.kind === "none" && (
-        <p className="text-xs text-zinc-600 dark:text-zinc-400">Enter a ZIP code above to see local wages.</p>
+        <p className="text-xs text-body">Enter a ZIP code above to see local wages.</p>
       )}
     </>
   );
@@ -71,7 +71,7 @@ function NetPrice({ result }: { result: NetPriceResult }) {
       body = (
         <>
           <span className="font-semibold tabular-nums">{usd.format(result.amount)}</span>{" "}
-          <span className="text-zinc-600 dark:text-zinc-400">
+          <span className="text-body">
             {result.status === "overall_average" ? `${result.period}, ${result.label}` : result.label}
           </span>
         </>
@@ -93,7 +93,7 @@ function NetPrice({ result }: { result: NetPriceResult }) {
       {result.residency_note && (
         <p className="flex flex-wrap items-center gap-2 text-xs">
           <Badge>In-state only</Badge>
-          <span className="text-zinc-600 dark:text-zinc-400">Public school price for {result.residency_note}.</span>
+          <span className="text-body">Public school price for {result.residency_note}.</span>
         </p>
       )}
     </div>
@@ -102,9 +102,9 @@ function NetPrice({ result }: { result: NetPriceResult }) {
 
 function Program({ program, tier }: { program: ProgramView; tier: IncomeTier | null }) {
   return (
-    <li className="rounded-lg border border-zinc-200 p-3 dark:border-zinc-800">
+    <li className="rounded-lg border border-light-gray p-3">
       <p className="font-medium">{program.provider_name}</p>
-      <p className="text-xs text-zinc-600 dark:text-zinc-400">
+      <p className="text-xs text-body">
         {program.city}, {program.state}
         {program.registered_in.length > 0 && ` · registered in ${program.registered_in.join(", ")}`}
       </p>
@@ -131,7 +131,7 @@ function Path({ card, zip, tier }: { card: CardViewModel; zip: ZipStatus; tier: 
     <>
       <p className="flex flex-wrap items-center gap-2">
         <span>
-          <span className="text-zinc-600 dark:text-zinc-400">Typical entry education:</span>{" "}
+          <span className="text-body">Typical entry education:</span>{" "}
           {path.entry_education.value}
         </span>
         <SourceNote source={path.entry_education.source} />
@@ -143,7 +143,7 @@ function Path({ card, zip, tier }: { card: CardViewModel; zip: ZipStatus; tier: 
       {path.apprenticeship_option && (
         <p className="flex flex-wrap items-center gap-2">
           <Badge>Apprenticeship option</Badge>
-          <span className="text-zinc-600 dark:text-zinc-400">Earn while you train.</span>
+          <span className="text-body">Earn while you train.</span>
           <SourceNote source={path.training_pathway.source} />
         </p>
       )}
@@ -157,7 +157,7 @@ function Path({ card, zip, tier }: { card: CardViewModel; zip: ZipStatus; tier: 
           </p>
           {path.national_route.value.length > 0 && (
             <p>
-              <span className="text-zinc-600 dark:text-zinc-400">Programs that lead here nationally:</span>{" "}
+              <span className="text-body">Programs that lead here nationally:</span>{" "}
               {path.national_route.value.join("; ")} <SourceNote source={path.national_route.source} />
             </p>
           )}
@@ -207,21 +207,21 @@ export function CareerCard({ card, zip, tier, open, onToggle, extras }: CareerCa
     // Outer subgrid: 6 shared rows. The glance part fills rows 1–5 so factors line up across cards;
     // the Expand footer sits in row 6 with self-start, so an open panel never stretches the other cards.
     <article aria-labelledby={`card-${card.soc}`} className="row-span-6 grid grid-rows-subgrid gap-0">
-      <div className="row-span-5 grid grid-rows-subgrid gap-0 overflow-hidden rounded-t-xl border border-b-0 border-zinc-300 bg-white dark:border-zinc-700 dark:bg-zinc-950">
-      <header className="p-4">
+      <div className="row-span-5 grid min-w-0 grid-cols-[minmax(0,1fr)] grid-rows-subgrid gap-0 overflow-hidden rounded-t-[20px] border border-b-0 border-light-gray bg-white">
+      <header className="min-w-0 bg-tint p-5 md:p-4 lg:p-5">
         {extras && (
-          <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-blue-800 dark:text-blue-300">
+          <p className="mb-1 text-xs font-semibold tracking-[1px] text-bright-blue uppercase">
             {extras.label.kicker}
           </p>
         )}
-        <h2 id={`card-${card.soc}`} className="text-xl font-semibold">
+        <h2 id={`card-${card.soc}`} className="font-display text-[22px] leading-[1.15] font-bold wrap-break-word text-georgetown-blue md:text-lg lg:text-[22px]">
           {card.title.value}
         </h2>
-        <p className="mt-1 flex items-center gap-2 text-xs text-zinc-600 dark:text-zinc-400">
+        <p className="mt-1 flex items-center gap-2 text-xs text-body">
           SOC {card.soc} <SourceNote source={card.title.source} />
         </p>
         {extras?.label.heading && (
-          <div className="mt-2 rounded-lg bg-amber-50 p-2 text-sm text-amber-900 dark:bg-amber-950 dark:text-amber-100">
+          <div className="mt-2 rounded-lg bg-highlight p-2 text-sm text-georgetown-blue">
             <p className="font-medium">{extras.label.heading}</p>
             {extras.label.note && <p className="text-xs">{extras.label.note}</p>}
           </div>
@@ -232,7 +232,7 @@ export function CareerCard({ card, zip, tier, open, onToggle, extras }: CareerCa
         {extras?.summary ? (
           <>
             <p>{extras.summary.summary}</p>
-            <p className="text-xs text-zinc-600 dark:text-zinc-400">
+            <p className="text-xs text-body">
               Written by AI from O*NET&rsquo;s task list for this career.
             </p>
             <SourceNote source={extras.summary.source} />
@@ -287,7 +287,7 @@ export function CareerCard({ card, zip, tier, open, onToggle, extras }: CareerCa
         ) : (
           <>
             <Badge tone="warn">{card.rewards.badge}</Badge>
-            <p className="text-zinc-600 dark:text-zinc-400">
+            <p className="text-body">
               O*NET hasn&rsquo;t rated the work values for this career yet, so we can&rsquo;t show them.
             </p>
           </>
@@ -304,14 +304,14 @@ export function CareerCard({ card, zip, tier, open, onToggle, extras }: CareerCa
       </Factor>
       </div>
 
-      <div className="self-start overflow-hidden rounded-b-xl border border-zinc-300 bg-white dark:border-zinc-700 dark:bg-zinc-950">
+      <div className="self-start overflow-hidden rounded-b-[20px] border border-light-gray bg-white">
         <button
           type="button"
           onClick={onToggle}
           aria-expanded={open}
           // Only reference the panel while it is rendered.
           aria-controls={open ? panelId : undefined}
-          className="flex w-full items-center justify-between gap-2 p-4 text-left text-sm font-semibold hover:bg-zinc-50 focus-visible:outline-2 focus-visible:outline-offset-[-2px] dark:hover:bg-zinc-900"
+          className="flex w-full items-center justify-between gap-2 p-4 text-left text-sm font-semibold text-georgetown-blue hover:bg-tint focus-visible:outline-offset-[-3px]"
         >
           <span>
             {open ? "Show less" : "What would it be like?"}
