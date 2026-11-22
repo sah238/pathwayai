@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 const optionCard =
   "flex min-h-12 cursor-pointer items-center gap-3 rounded-xl border border-light-gray bg-white px-4 py-3 text-base " +
   "has-checked:border-bright-blue has-checked:bg-highlight has-focus-visible:outline-3 has-focus-visible:outline-offset-2 has-focus-visible:outline-bright-blue " +
-  "has-disabled:cursor-not-allowed has-disabled:bg-tint has-disabled:text-georgetown-gray";
+  "has-disabled:cursor-not-allowed has-disabled:bg-tint has-disabled:text-body";
 
 const inputClass = "size-5 shrink-0 accent-bright-blue focus-visible:outline-none";
 
