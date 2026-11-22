@@ -45,7 +45,8 @@ export const QuizResponsesSchema = z.strictObject({
   q1_dream_job: DreamJobSchema,
   q2_activities: z.array(text).max(3),
   q3_asked_for_help: optText,
-  q4_values_most_least: ValuesMostLeastSchema,
+  /** null when skipped (docs/values-quiz.md, Follow-ups); otherwise all 3 picks. */
+  q4_values_most_least: ValuesMostLeastSchema.nullable(),
   q5_job_pairs: z.strictObject({
     support_vs_independence: text,
     recognition_vs_relationships: text,
