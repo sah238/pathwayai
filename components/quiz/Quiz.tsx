@@ -80,10 +80,8 @@ export function Quiz() {
 
   const finish = () => {
     const responses = buildQuizResponses(quiz);
-    if (process.env.NODE_ENV !== "production") {
-      // Session 9 replaces this with the hand-off to /api/extract.
-      console.log("QuizResponses", responses);
-    }
+    // TODO(session 9): hand `responses` to /api/extract here, in memory only.
+    void responses;
     moved.current = true;
     setFinished(true);
   };

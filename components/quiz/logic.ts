@@ -4,11 +4,13 @@
  * cookies or the network.
  */
 import type { Q4Label } from "@/lib/data/constants";
+import { zipToState } from "@/lib/data/geo";
 import { QuizResponsesSchema, type QuizResponses } from "@/lib/quiz/responses";
 import {
   FOLLOW_UPS,
   NO_PREFERENCE,
   Q10,
+  Q11,
   Q2,
   Q4,
   Q5,
@@ -157,6 +159,15 @@ function q9Picked(s: QuizState) {
 }
 
 export const isValidZip = (zip: string): boolean => /^\d{5}$/.test(zip.trim());
+
+/**
+ * The note shown under Q11 for a complete ZIP outside DC, MD and VA, or null.
+ * It never blocks Next: the ZIP is still kept, and the results page falls
+ * back to national wages.
+ */
+export function zipRegionMessage(zip: string): string | null {
+  return isValidZip(zip) && zipToState(zip) === null ? Q11.outsideRegion : null;
+}
 
 /** Question steps are 0–10 (Q1–Q11); follow-up steps come after. */
 export function canAdvance(s: QuizState, step: number): boolean {

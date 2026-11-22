@@ -221,6 +221,11 @@ export const Q10 = {
 export const Q11 = {
   prompt: "What's your ZIP code? (Optional)",
   helper: "We use this to show pay, jobs and in-state school costs near you. We don't save it.",
+  /**
+   * Word for word the results page's message (app/results/ResultsClient.tsx,
+   * "outside_region"), so students see the same wording in both places.
+   */
+  outsideRegion: "This ZIP is outside DC, Maryland and Virginia, so national wages are shown.",
 } as const;
 
 // Follow-ups -------------------------------------------------------------

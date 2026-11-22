@@ -2,7 +2,7 @@
 
 import type { Q4Label } from "@/lib/data/constants";
 import { CheckCard, ChoiceList, Chip, Recap, StopSlider, TextField } from "./controls";
-import { isValidZip, q4Complete, tapQ4, type FollowUpId, type QuizState } from "./logic";
+import { isValidZip, q4Complete, tapQ4, zipRegionMessage, type FollowUpId, type QuizState } from "./logic";
 import {
   FOLLOW_UPS,
   NO_PREFERENCE,
@@ -366,6 +366,8 @@ function Q10Screen({ s, update }: ScreenProps) {
 
 function Q11Screen({ s, update }: ScreenProps) {
   const invalid = s.q11.trim() !== "" && !isValidZip(s.q11);
+  const regionNote = zipRegionMessage(s.q11);
+  const describedBy = ["q11-help", invalid && "q11-error", regionNote && "q11-region"].filter(Boolean).join(" ");
   return (
     <div className="flex flex-col gap-2">
       <label htmlFor="q11" className="font-medium">
@@ -381,7 +383,7 @@ function Q11Screen({ s, update }: ScreenProps) {
         autoComplete="off"
         maxLength={5}
         value={s.q11}
-        aria-describedby={invalid ? "q11-help q11-error" : "q11-help"}
+        aria-describedby={describedBy}
         aria-invalid={invalid}
         onChange={(e) => update((st) => ({ ...st, q11: e.target.value.replace(/\D/g, "") }))}
         className="w-40 rounded-xl border border-zinc-400 bg-white px-4 py-3 text-lg tracking-widest focus:border-blue-700 focus:outline-2 focus:outline-blue-700 dark:border-zinc-500 dark:bg-zinc-900"
@@ -391,6 +393,9 @@ function Q11Screen({ s, update }: ScreenProps) {
           A ZIP code has 5 digits. You can also leave this blank.
         </p>
       )}
+      <p id="q11-region" role="status" className="text-sm text-zinc-800 dark:text-zinc-200">
+        {regionNote}
+      </p>
     </div>
   );
 }

@@ -10,9 +10,10 @@ import {
   makeOrder,
   shuffle,
   tapQ4,
+  zipRegionMessage,
   type QuizState,
 } from "./logic";
-import { NO_PREFERENCE, Q2, Q8, Q9 } from "./questions";
+import { NO_PREFERENCE, Q11, Q2, Q8, Q9 } from "./questions";
 
 /** Deterministic random so shuffles are repeatable. */
 function seeded(seed: number) {
@@ -174,6 +175,27 @@ describe("quiz rules", () => {
     expect(q4).toEqual({ most: [labels[1]], least: labels[2] });
     q4 = tapQ4(q4, labels[2]);
     expect(q4.least).toBeNull();
+  });
+
+  it.each([
+    ["10001", Q11.outsideRegion], // New York
+    ["90210", Q11.outsideRegion], // California
+    ["20019", null], // DC
+    ["21201", null], // MD
+    ["22201", null], // VA
+    ["20101", null], // VA, 201 prefix
+    ["", null], // skipped
+    ["2001", null], // incomplete: the 5-digit error shows instead
+  ])("Q11 region note for ZIP %j", (zip, expected) => {
+    expect(zipRegionMessage(zip)).toBe(expected);
+  });
+
+  it("keeps an out-of-region ZIP and lets the student continue", () => {
+    const s = simulateRun((s) => {
+      s.q11 = "10001";
+    });
+    expect(canAdvance(s, 10)).toBe(true);
+    expect(buildQuizResponses(s).q11_zip_code).toBe("10001");
   });
 
   it.each([
