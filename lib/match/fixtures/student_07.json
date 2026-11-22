@@ -1,0 +1,76 @@
+{
+  "id": "student_07",
+  "quiz_responses": {
+    "q1_dream_job": {
+      "has_dream_job": true,
+      "job": "Commercial Truck Driver or Logistics Coordinator",
+      "because": "I hate sitting in classrooms all day, I like driving, and I want a dependable paycheck right after graduation.",
+      "workday_description": null
+    },
+    "q2_activities": [
+      "Fix or build something",
+      "Plan a budget or keep things organized"
+    ],
+    "q3_asked_for_help": "Planning road trip routes and packing the trunk so everything fits.",
+    "q4_values_most_least": {
+      "most_important": [
+        "Decide for myself how to do things",
+        "Good pay and steady work"
+      ],
+      "least_important": "Get noticed and move up"
+    },
+    "q5_job_pairs": {
+      "support_vs_independence": "You figure out your own way of doing things",
+      "recognition_vs_relationships": "No preference",
+      "working_conditions_vs_achievement": "Steady, predictable work, even if the tasks feel similar day to day"
+    },
+    "q6_work_setting": {
+      "indoors_outdoors": "Outdoors",
+      "desk_moving": "No preference"
+    },
+    "q7_working_with_public": "Very little",
+    "q8_schedule": {
+      "regularity": "The same days and hours every week",
+      "weekly_hours": "More than 40 some weeks is fine"
+    },
+    "q9_avoid": {
+      "selected_flags": [
+        "angry_people",
+        "sales",
+        "computer"
+      ],
+      "selected_chips": [
+        "Dealing with upset or angry people",
+        "Selling things or meeting sales goals",
+        "Being on a computer most of the day"
+      ],
+      "something_else": null
+    },
+    "q10_training": {
+      "max_education": "A few months",
+      "apprenticeship_interest": true,
+      "follow_up": null
+    },
+    "q11_zip_code": "20601"
+  },
+  "filters": {
+    "is_career_query": true,
+    "has_constraint_conflict": false,
+    "interest_tags": [
+      "R",
+      "C"
+    ],
+    "work_values": [
+      "independence",
+      "working_conditions"
+    ],
+    "work_context": [
+      "Outdoors",
+      "Standard Schedule",
+      "Overtime Common (>40hr)"
+    ],
+    "max_education": "Postsecondary nondegree award",
+    "job_zone_ceiling": 3,
+    "zip_code": "20601"
+  }
+}

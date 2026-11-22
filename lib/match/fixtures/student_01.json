@@ -1,0 +1,77 @@
+{
+  "id": "student_01",
+  "quiz_responses": {
+    "q1_dream_job": {
+      "has_dream_job": true,
+      "job": "Electrician",
+      "because": "I like working with my hands, solving physical puzzles, and I want to start earning good money right out of high school without college debt.",
+      "workday_description": null
+    },
+    "q2_activities": [
+      "Fix or build something",
+      "Figure out how something works"
+    ],
+    "q3_asked_for_help": "My neighbors always ask me to help assemble furniture or fix broken outlets and lamps.",
+    "q4_values_most_least": {
+      "most_important": [
+        "Good pay and steady work",
+        "See the results of my work"
+      ],
+      "least_important": "Get noticed and move up"
+    },
+    "q5_job_pairs": {
+      "support_vs_independence": "Your manager gives you a clear plan to follow",
+      "recognition_vs_relationships": "Your team shares the credit and everyone backs each other up",
+      "working_conditions_vs_achievement": "Steady, predictable work, even if the tasks feel similar day to day"
+    },
+    "q6_work_setting": {
+      "indoors_outdoors": "Outdoors",
+      "desk_moving": "On my feet and moving"
+    },
+    "q7_working_with_public": "Very little",
+    "q8_schedule": {
+      "regularity": "The same days and hours every week",
+      "weekly_hours": "Usually 40 or less"
+    },
+    "q9_avoid": {
+      "selected_flags": [
+        "computer",
+        "sales"
+      ],
+      "selected_chips": [
+        "Being on a computer most of the day",
+        "Selling things or meeting sales goals"
+      ],
+      "something_else": null
+    },
+    "q10_training": {
+      "max_education": "A few months",
+      "apprenticeship_interest": true,
+      "follow_up": null
+    },
+    "q11_zip_code": "22201"
+  },
+  "filters": {
+    "is_career_query": true,
+    "has_constraint_conflict": false,
+    "interest_tags": [
+      "R",
+      "I",
+      "C"
+    ],
+    "work_values": [
+      "working_conditions",
+      "achievement",
+      "support"
+    ],
+    "work_context": [
+      "Outdoors",
+      "Physical/Active",
+      "Standard Schedule",
+      "Part-Time/Flexible (<40hr)"
+    ],
+    "max_education": "Postsecondary nondegree award",
+    "job_zone_ceiling": 3,
+    "zip_code": "22201"
+  }
+}

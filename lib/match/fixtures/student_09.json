@@ -1,0 +1,79 @@
+{
+  "id": "student_09",
+  "quiz_responses": {
+    "q1_dream_job": {
+      "has_dream_job": true,
+      "job": "Chef or Restaurant Manager",
+      "because": "Cooking brings people together, and I love the fast-paced energy of a kitchen where you see your work immediately.",
+      "workday_description": null
+    },
+    "q2_activities": [
+      "Cook for people",
+      "Organize a group or event",
+      "Start a small business or side hustle"
+    ],
+    "q3_asked_for_help": "Cooking for family cookouts and organizing team dinners after basketball games.",
+    "q4_values_most_least": {
+      "most_important": [
+        "See the results of my work",
+        "Help people and work with people I like"
+      ],
+      "least_important": "Have a boss and company that support me"
+    },
+    "q5_job_pairs": {
+      "support_vs_independence": "You figure out your own way of doing things",
+      "recognition_vs_relationships": "Your team shares the credit and everyone backs each other up",
+      "working_conditions_vs_achievement": "A chance at big results, even if some projects don't work out"
+    },
+    "q6_work_setting": {
+      "indoors_outdoors": "Indoors",
+      "desk_moving": "On my feet and moving"
+    },
+    "q7_working_with_public": "Some of it",
+    "q8_schedule": {
+      "regularity": "Hours that change week to week, depending on what's needed",
+      "weekly_hours": "More than 40 some weeks is fine"
+    },
+    "q9_avoid": {
+      "selected_flags": [
+        "computer",
+        "others_safety"
+      ],
+      "selected_chips": [
+        "Being on a computer most of the day",
+        "Being responsible for other people's safety"
+      ],
+      "something_else": null
+    },
+    "q10_training": {
+      "max_education": "About 1-2 years",
+      "apprenticeship_interest": true,
+      "follow_up": null
+    },
+    "q11_zip_code": "20020"
+  },
+  "filters": {
+    "is_career_query": true,
+    "has_constraint_conflict": false,
+    "interest_tags": [
+      "E",
+      "S",
+      "R"
+    ],
+    "work_values": [
+      "achievement",
+      "relationships",
+      "independence"
+    ],
+    "work_context": [
+      "Indoors",
+      "Physical/Active",
+      "High Public Contact",
+      "Shift/Irregular",
+      "Overtime Common (>40hr)"
+    ],
+    "max_education": "Associate's degree",
+    "job_zone_ceiling": 3,
+    "zip_code": "20020"
+  }
+}
