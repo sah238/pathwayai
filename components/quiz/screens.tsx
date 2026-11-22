@@ -1,10 +1,12 @@
 "use client";
 
+import { DraftLabel } from "@/components/ui/DraftLabel";
 import type { Q4Label } from "@/lib/data/constants";
 import { CheckCard, ChoiceList, Chip, Recap, StopSlider, TextField } from "./controls";
 import { isValidZip, q4Complete, tapQ4, zipRegionMessage, type FollowUpId, type QuizState } from "./logic";
 import {
   FOLLOW_UPS,
+  FREE_TEXT_PRIVACY_NOTE,
   NO_PREFERENCE,
   PLACEHOLDERS,
   Q1,
@@ -53,12 +55,24 @@ export function promptFor(step: number, s: QuizState, followUp: FollowUpId | und
 const linkButton =
   "self-start text-base font-medium text-bright-blue underline underline-offset-4 hover:text-georgetown-blue";
 
+const PRIVACY_NOTE_ID = "free-text-privacy-note";
+
+function FreeTextNote() {
+  return (
+    <div id={PRIVACY_NOTE_ID} className="rounded-xl bg-tint px-4 py-3">
+      <p className="text-sm text-body">{FREE_TEXT_PRIVACY_NOTE}</p>
+      <DraftLabel className="mt-1" />
+    </div>
+  );
+}
+
 function Q1Screen({ s, update, seed }: ScreenProps) {
   const ex = pick(PLACEHOLDERS.q1Job, seed);
   const setQ1 = (patch: Partial<QuizState["q1"]>) => update((st) => ({ ...st, q1: { ...st.q1, ...patch } }));
   if (s.q1.mode === "workday") {
     return (
       <div className="flex flex-col gap-4">
+        <FreeTextNote />
         <TextField
           id="q1-workday"
           label="My ideal workday"
@@ -67,6 +81,7 @@ function Q1Screen({ s, update, seed }: ScreenProps) {
           placeholder={pick(PLACEHOLDERS.q1Workday, seed)}
           multiline
           maxLength={500}
+          describedBy={PRIVACY_NOTE_ID}
         />
         <button type="button" className={linkButton} onClick={() => setQ1({ mode: "job" })}>
           {Q1.haveJobLink}
@@ -76,7 +91,16 @@ function Q1Screen({ s, update, seed }: ScreenProps) {
   }
   return (
     <div className="flex flex-col gap-4">
-      <TextField id="q1-job" label={Q1.jobLabel} value={s.q1.job} onChange={(job) => setQ1({ job })} placeholder={ex.job} maxLength={100} />
+      <FreeTextNote />
+      <TextField
+        id="q1-job"
+        label={Q1.jobLabel}
+        value={s.q1.job}
+        onChange={(job) => setQ1({ job })}
+        placeholder={ex.job}
+        maxLength={100}
+        describedBy={PRIVACY_NOTE_ID}
+      />
       <TextField
         id="q1-because"
         label={Q1.becauseLabel}
@@ -85,6 +109,7 @@ function Q1Screen({ s, update, seed }: ScreenProps) {
         placeholder={ex.because}
         multiline
         maxLength={300}
+        describedBy={PRIVACY_NOTE_ID}
       />
       <button type="button" className={linkButton} onClick={() => setQ1({ mode: "workday" })}>
         {Q1.noJobLink}
@@ -122,16 +147,20 @@ function Q2Screen({ s, update }: ScreenProps) {
 
 function Q3Screen({ s, update, seed }: ScreenProps) {
   return (
-    <TextField
-      id="q3"
-      label="People ask me to help with…"
-      value={s.q3}
-      onChange={(q3) => update((st) => ({ ...st, q3 }))}
-      placeholder={pick(PLACEHOLDERS.q3, seed)}
-      multiline
-      maxLength={300}
-      optional
-    />
+    <div className="flex flex-col gap-4">
+      <FreeTextNote />
+      <TextField
+        id="q3"
+        label="People ask me to help with…"
+        value={s.q3}
+        onChange={(q3) => update((st) => ({ ...st, q3 }))}
+        placeholder={pick(PLACEHOLDERS.q3, seed)}
+        multiline
+        maxLength={300}
+        optional
+        describedBy={PRIVACY_NOTE_ID}
+      />
+    </div>
   );
 }
 
@@ -316,14 +345,18 @@ function Q9Screen({ s, update, seed }: ScreenProps) {
         {Q9.somethingElse}
       </CheckCard>
       {s.q9.somethingElseChecked && !s.q9.none && (
-        <TextField
-          id="q9-something-else"
-          label="What else would you avoid?"
-          value={s.q9.somethingElse}
-          onChange={(somethingElse) => setQ9({ somethingElse })}
-          placeholder={pick(PLACEHOLDERS.q9SomethingElse, seed)}
-          maxLength={200}
-        />
+        <>
+          <FreeTextNote />
+          <TextField
+            id="q9-something-else"
+            label="What else would you avoid?"
+            value={s.q9.somethingElse}
+            onChange={(somethingElse) => setQ9({ somethingElse })}
+            placeholder={pick(PLACEHOLDERS.q9SomethingElse, seed)}
+            maxLength={200}
+            describedBy={PRIVACY_NOTE_ID}
+          />
+        </>
       )}
       <CheckCard checked={s.q9.none} onChange={(none) => setQ9({ none })}>
         {Q9.none}
@@ -415,9 +448,13 @@ const QUESTION_SCREENS = [
 ] as const;
 
 export function QuestionScreen({ step, onSkipQ4, ...props }: ScreenProps & { step: number; onSkipQ4: () => void }) {
-  if (step === 3) return <Q4Screen {...props} onSkip={onSkipQ4} />;
   const Screen = QUESTION_SCREENS[step];
-  return Screen ? <Screen {...props} /> : null;
+  return (
+    <>
+      {step === 3 ? <Q4Screen {...props} onSkip={onSkipQ4} /> : Screen ? <Screen {...props} /> : null}
+      <DraftLabel />
+    </>
+  );
 }
 
 // Follow-ups -------------------------------------------------------------
@@ -443,7 +480,16 @@ function recapFor(id: FollowUpId, s: QuizState): string {
   }
 }
 
-export function FollowUpScreen({ id, s, update, seed }: ScreenProps & { id: FollowUpId }) {
+export function FollowUpScreen(props: ScreenProps & { id: FollowUpId }) {
+  return (
+    <>
+      <FollowUpBody {...props} />
+      <DraftLabel />
+    </>
+  );
+}
+
+function FollowUpBody({ id, s, update, seed }: ScreenProps & { id: FollowUpId }) {
   const setFU = <K extends keyof QuizState["followUps"]>(key: K, value: QuizState["followUps"][K]) =>
     update((st) => ({ ...st, followUps: { ...st.followUps, [key]: value } }));
   const recap = <Recap>{recapFor(id, s)}</Recap>;
@@ -461,14 +507,18 @@ export function FollowUpScreen({ id, s, update, seed }: ScreenProps & { id: Foll
           onChange={(choice) => setFU("q1_reason", { ...fu, choice })}
         />
         {fu.choice === FOLLOW_UPS.q1_reason.other && (
-          <TextField
-            id="fu-q1-other"
-            label="What part?"
-            value={fu.other}
-            onChange={(other) => setFU("q1_reason", { ...fu, other })}
-            placeholder={pick(PLACEHOLDERS.followUpQ1Other, seed)}
-            maxLength={200}
-          />
+          <>
+            <FreeTextNote />
+            <TextField
+              id="fu-q1-other"
+              label="What part?"
+              value={fu.other}
+              onChange={(other) => setFU("q1_reason", { ...fu, other })}
+              placeholder={pick(PLACEHOLDERS.followUpQ1Other, seed)}
+              maxLength={200}
+              describedBy={PRIVACY_NOTE_ID}
+            />
+          </>
         )}
       </div>
     );

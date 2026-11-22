@@ -1,6 +1,6 @@
 # PathwayAI end-to-end test report
 
-**Date:** 2026-11-22 · **Branch:** `s10-tests` · **Base:** `main` at `8a5529a`
+**Date:** 2026-11-22 · **Branch:** `s10-fixes` · **Base:** `main` at `0f46a6d`
 
 **Live Claude API check: Not yet run.** Every result below uses saved fixtures and a mocked Claude. No Claude API call was made.
 
@@ -13,57 +13,38 @@
 | 2 | Routing: nudge, conflict labels, API failure to `/browse` | PASS | |
 | 3 | Bias: ZIP and income do not change the three careers | PASS | |
 | 4 | Privacy: URLs, storage, cookies, logs and structured Claude requests | PASS | |
-| 4a | Privacy: personal details typed into free-text answers stay out of Claude | **FAIL** | F3 |
+| 4a | Privacy: common personal details typed into free-text answers are removed before Claude | PASS | F3 fixed. Best effort; see limits below. |
 | 5 | Accessibility: automated axe scan, phone and desktop | PASS | No issues found |
-| 6 | Labels: draft wording keeps a visible review label | **FAIL** | F1 |
-| 6a | Avoid-list warning reaches the card (`student_05`) | **FAIL** | F2 |
+| 6 | Labels: draft wording keeps a visible review label | PASS | F1 fixed |
+| 6a | Avoid-list warning reaches the card (`student_05`) | PASS | F2 fixed |
 | L | Live Claude API, 12 cases | **Not yet run** | Commands below |
 
 | Command | Result |
 |---|---|
-| `npm test` | Passed: 25 files, 660 tests passed, 11 expected failures (one per confirmed bug assertion) |
+| `npm test` | Passed: 26 files, 713 tests passed, 1 expected failure (F4) |
 | `npm run test:e2e` | Passed: 10 of 10 browser tests (5 at each width) |
 | `npx tsc --noEmit` | Passed |
 | `npm run lint` | Passed |
 
-`npm test` is green because confirmed bugs use `it.fails`. When a fix lands on `s10-fixes`, its `it.fails` test turns red until `.fails` is removed. A green run therefore does not mean F1 to F4 are fixed.
+`npm test` is green with F4 still open because F4 uses `it.fails`. The F1, F2 and F3 tests are normal tests again.
+
+## Fixed on `s10-fixes`
+
+### F1. Draft wording now shows a visible review label
+
+The card header, "Why it fits you", every finish-screen state, and every question and follow-up screen now show "Wording: draft — pending counselor review." No existing wording changed. Test: `tests/e2e/labels.test.ts`
+
+### F2. The avoid-list warning now reaches the card
+
+`avoid_hits` now travels through `/api/recommend` to the card. `student_05` sees that they said they'd rather avoid "Blood or medical procedures", why the career is still shown, and a draft label. Only known Q9 flags are carried, never typed text. Like all quiz personalization, the warning lives in browser memory and is gone after a page refresh. Test: `tests/e2e/labels.test.ts`
+
+### F3. Common personal details are removed from typed answers before Stage 1
+
+`lib/extract/redact.ts` runs on the five typed answer fields when the Stage 1 message is built. It removes ZIP codes, dollar amounts, common income figures, and race, ethnicity and gender words when a student describes themself. Phrases such as "teach Black history" and "women's health" stay. Each free-text box also has a draft note asking students not to include personal details. Tests: `tests/e2e/privacy.test.ts`, `lib/extract/redact.test.ts`
+
+**Limits:** this is pattern matching and will miss some details, such as spelled-out amounts ("forty thousand"), nationalities, names, street addresses and unusual phrasing. It does not make free-text answers anonymous.
 
 ## Failures
-
-No app code was changed in this PR. Fixes belong on `s10-fixes`.
-
-### F1. Draft wording shown without a visible review label
-
-These strings are marked as drafts in code, but the student sees no "Draft — pending counselor review" label.
-
-| Wording | Shown at | Marked as draft at |
-|---|---|---|
-| Card slot labels | `components/cards/CareerCard.tsx:214` | `components/cards/personalize.ts:15` |
-| "Why it fits you" text | `components/cards/CareerCard.tsx:256`, `:266` | `components/cards/personalize.ts:6` |
-| Closest-match heading and note | `components/cards/CareerCard.tsx:225`, `:226` | `lib/match/selectCards.ts:63` |
-| Off-topic nudge | `components/quiz/FinishScreen.tsx:50` | `lib/match/selectCards.ts:50` |
-| API-failure message | `components/quiz/FinishScreen.tsx:64`, `:68` | `components/quiz/FinishScreen.tsx:6` |
-| Finish-screen wait message | `components/quiz/FinishScreen.tsx:37`, `:40` | `components/quiz/FinishScreen.tsx:6` |
-| Quiz question wording | `components/quiz/screens.tsx:417` | `lib/quiz/responses.ts:7` |
-
-Test: `tests/e2e/labels.test.ts`
-
-### F2. `student_05`'s avoid-list warning is dropped before the card
-
-`student_05` selected "Blood or medical procedures" to avoid, and their first card is Nurse Practitioners. Selection records the hit in `avoid_hits`, as designed for a conflict card. The API response does not include it, so the card gives no warning.
-
-- Dropped at: `app/api/recommend/handler.ts:104`
-- Missing from the response type: `app/api/recommend/types.ts:27`
-- Nothing to display it: `components/cards/CareerCard.tsx:203`
-- Test: `tests/e2e/labels.test.ts`
-
-### F3. Personal details typed into a free-text answer reach Claude
-
-ZIP, income and demographic **fields** never reach Claude. If a student **types** them into an answer, such as "My ZIP is 20910, my family makes $40,000 a year, and I am a Latina girl", the sentence is sent unchanged in the Stage 1 user message. Stage 2 is not affected.
-
-- Sent at: `lib/extract/prompt.ts:28`
-- Test: `tests/e2e/privacy.test.ts`
-- The team needs to decide how to handle this, for example by redacting patterns, warning students near the text box, or both. Pattern matching cannot catch every phrasing.
 
 ### F4. Four displayed values have no `data_vintage`
 
@@ -104,7 +85,7 @@ Displayed at `components/cards/CareerCard.tsx:114`. Test: `tests/e2e/numbers.tes
 
 ### 4. Privacy (`tests/e2e/privacy.test.ts`, `tests/browser/app.spec.ts`)
 
-- Answers appear only in the Stage 1 user message. The Stage 2 request exactly equals the three career records.
+- Answers appear only in the Stage 1 user message, after the F3 redaction. The Stage 2 request exactly equals the three career records.
 - ZIP, income, race, ethnicity, gender, sex, age, name, email and GPA fields are refused or kept out of Claude requests.
 - In a real browser, marker values for ZIP, income and answers were absent from URLs, request headers, localStorage, sessionStorage, IndexedDB, Cache Storage, cookies, the console and the server log.
 - `npm test` removes the API key and blocks every non-local network request (`tests/setup/block-network.ts`).
@@ -120,7 +101,7 @@ Automated scans catch only part of WCAG. Keyboard use, screen-reader use and a s
 
 ### 6. Labels (`tests/e2e/labels.test.ts`)
 
-Labels are present on first-step wording, the early-career flag and the printed guide. All other draft wording is listed under F1.
+Labels are present on first-step wording, the early-career flag, the printed guide, and all the wording listed under F1, plus the new avoid-list warning and free-text privacy note.
 
 ## Live Claude check: Not yet run
 

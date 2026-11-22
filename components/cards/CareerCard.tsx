@@ -12,9 +12,10 @@ import type { WagePercentiles } from "@/lib/data/lookup";
 import { Badge } from "./Badge";
 import { ExpandPanel } from "./ExpandPanel";
 import { Factor } from "./Factor";
-import { FIT_INTERESTS_INTRO, FIT_VALUES_INTRO, type CardExtras } from "./personalize";
+import { AVOID_INTRO, FIT_INTERESTS_INTRO, FIT_VALUES_INTRO, type CardExtras } from "./personalize";
 import { STATE_NAMES, usd } from "./format";
 import { SourceNote } from "./SourceNote";
+import { DraftLabel } from "@/components/ui/DraftLabel";
 
 const VISIBLE_PROGRAMS = 3;
 
@@ -226,6 +227,16 @@ export function CareerCard({ card, zip, tier, open, onToggle, extras }: CareerCa
             {extras.label.note && <p className="text-xs">{extras.label.note}</p>}
           </div>
         )}
+        {extras && <DraftLabel className="mt-2" />}
+        {extras?.avoid && (
+          <div className="mt-2 rounded-lg border border-warn-line bg-warn-tint p-2 text-sm text-georgetown-blue">
+            <p className="font-medium">
+              {AVOID_INTRO} {extras.avoid.labels.join(", ")}. {extras.avoid.involves}
+            </p>
+            <p className="text-xs">{extras.avoid.reason}</p>
+            <DraftLabel className="mt-1" />
+          </div>
+        )}
       </header>
 
       <Factor n={1} title="A day in this job">
@@ -271,6 +282,7 @@ export function CareerCard({ card, zip, tier, open, onToggle, extras }: CareerCa
               </ul>
             </>
           )}
+          <DraftLabel />
           <SourceNote source={card.rewards.source} />
         </Factor>
       ) : (

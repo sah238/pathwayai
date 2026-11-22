@@ -130,6 +130,7 @@ export function TextField({
   multiline,
   maxLength,
   optional,
+  describedBy,
 }: {
   id: string;
   label: string;
@@ -139,6 +140,8 @@ export function TextField({
   multiline?: boolean;
   maxLength: number;
   optional?: boolean;
+  /** id of a note that screen readers should read with this box. */
+  describedBy?: string;
 }) {
   const field =
     "w-full rounded-xl border border-georgetown-gray bg-white px-4 py-3 text-base text-georgetown-blue placeholder:text-georgetown-gray " +
@@ -156,6 +159,7 @@ export function TextField({
           value={value}
           maxLength={maxLength}
           placeholder={placeholder}
+          aria-describedby={describedBy}
           onChange={(e) => onChange(e.target.value)}
           className={field}
         />
@@ -167,6 +171,7 @@ export function TextField({
           maxLength={maxLength}
           placeholder={placeholder}
           autoComplete="off"
+          aria-describedby={describedBy}
           onChange={(e) => onChange(e.target.value)}
           className={field}
         />

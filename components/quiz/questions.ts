@@ -43,6 +43,10 @@ export const PLACEHOLDERS = {
   followUpQ1Other: ["Getting to be creative every day"],
 } as const;
 
+/** Shown near every free-text box. Draft — pending counselor review. */
+export const FREE_TEXT_PRIVACY_NOTE =
+  "Please don't include personal details like your name, address, ZIP code, family income, race or gender. Your answers are sent to an AI service to find careers. We try to remove some of these details first, but we can't catch everything.";
+
 // Q2 ---------------------------------------------------------------------
 
 export const Q2 = {

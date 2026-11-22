@@ -37,6 +37,7 @@ function recommendBody(fixture: { quiz_responses: unknown; filters: unknown }) {
       dream_job_label: c.dream_job_label,
       matched_values: [],
       matched_interests: [],
+      avoid_hits: c.avoid_hits,
       summary: {
         kind: "tasks",
         soc_code: c.soc,
@@ -149,9 +150,10 @@ test.describe("check 2: routing in the browser", () => {
     await mockRecommend(page, recommendBody(conflictFixture));
     await walkQuiz(page, "");
     await expect(page).toHaveURL(/\/results\?socs=/);
-    await expect(page.getByText("Closest match to what you described")).toBeVisible();
+    await expect(page.getByText("Closest match to what you described", { exact: true })).toBeVisible();
     await expect(page.getByText("A shorter training path")).toHaveCount(2);
     await expect(page.getByText("Closest career in our list to Surgeon")).toBeVisible();
+    await expect(page.getByText("You said you'd rather avoid: Blood or medical procedures.")).toBeVisible();
   });
 
   test("an API failure leads to /browse, and the server logs no answers", async ({ page }) => {

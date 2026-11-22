@@ -3,8 +3,9 @@
  * imports) so the quiz can validate what it receives before using it.
  *
  * The response carries career codes, selection labels, the student's matched
- * values and interest letters, and Stage 2 summaries. It never carries the
- * ZIP, income or any quiz answer text.
+ * values and interest letters, any Q9 avoid flags the career hits, and Stage 2
+ * summaries. It never carries the ZIP or income. The only answer text it can
+ * echo is the Q1 job, inside dream_job_label.
  */
 import { z } from "zod";
 import { InterestTagSchema, WorkValueSchema } from "@/lib/extract/schema";
@@ -32,6 +33,8 @@ const RecommendedCardSchema = z.object({
   matched_values: z.array(WorkValueSchema).max(2),
   /** The student's RIASEC letters that appear in this career's code, in the student's order. */
   matched_interests: z.array(InterestTagSchema),
+  /** Q9 avoid flags this career hits. Only keys of AVOID_TABLE, never the student's typed text. */
+  avoid_hits: z.array(z.string()),
   summary: SummarySchema,
 });
 

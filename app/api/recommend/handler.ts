@@ -107,6 +107,7 @@ export function createRecommendHandler(
       dream_job_label: pick.dream_job_label,
       matched_values: matchedValues(pick),
       matched_interests: matchedInterests(filters.interest_tags, occs[i]),
+      avoid_hits: pick.avoid_hits,
       summary: summaries[i],
     })) as [RecommendedCard, RecommendedCard, RecommendedCard];
 

@@ -8,6 +8,7 @@
 import Link from "next/link";
 import type { RefObject } from "react";
 import { buttonStyles } from "@/components/ui/button";
+import { DraftLabel } from "@/components/ui/DraftLabel";
 import { pageIntro, pageTitle } from "@/components/ui/surface";
 import type { SubmitOutcome } from "./submit";
 
@@ -39,6 +40,7 @@ export function FinishScreen({ outcome, headingRef, onBack, onStartOver, onRetry
           <p role="status" className={bodyClass}>
             Finding three careers for you. This can take up to a minute.
           </p>
+          <DraftLabel />
         </>
       );
     case "nudge":
@@ -48,6 +50,7 @@ export function FinishScreen({ outcome, headingRef, onBack, onStartOver, onRetry
             Let&apos;s talk about careers
           </h1>
           <p className={bodyClass}>{outcome.message}</p>
+          <DraftLabel />
           <div className="flex flex-wrap gap-3">
             <button type="button" className={buttonStyles.compact} onClick={onBack}>
               Back to the quiz
@@ -67,6 +70,7 @@ export function FinishScreen({ outcome, headingRef, onBack, onStartOver, onRetry
           <p role="alert" className={bodyClass}>
             {ERROR_BODY}
           </p>
+          <DraftLabel />
           <div className="flex flex-wrap gap-3">
             <Link href="/browse" className={buttonStyles.compact}>
               Browse careers
