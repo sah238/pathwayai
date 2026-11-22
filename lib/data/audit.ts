@@ -11,6 +11,7 @@
  */
 import { DMV_STATES, ONET_WORK_VALUES, Q4_OPTIONS, type DmvState } from "./constants";
 import { zipToState } from "./geo";
+import { fieldSourceKey } from "./provenance";
 import {
   InstitutionsFileSchema,
   OccupationsFileSchema,
@@ -437,9 +438,7 @@ export function checkProvenance(occFile: OccupationsFile, instFile: Institutions
     out.push({ check: "provenance", severity, file, record, path, message });
 
   const sources = occFile.metadata.field_sources ?? {};
-  const keys = Object.keys(sources);
-  const resolve = (path: string) =>
-    keys.filter((k) => path === k || path.startsWith(`${k}.`)).sort((a, b) => b.length - a.length)[0];
+  const resolve = (path: string) => fieldSourceKey(sources, path);
 
   const unresolved = new Map<string, Set<string>>();
   for (const occ of occFile.occupations) {
