@@ -1,0 +1,49 @@
+{
+  "id": "off_topic_pizza",
+  "quiz_responses": {
+    "q1_dream_job": {
+      "has_dream_job": false,
+      "job": null,
+      "because": null,
+      "workday_description": "what's the best pizza topping"
+    },
+    "q2_activities": [],
+    "q3_asked_for_help": null,
+    "q4_values_most_least": null,
+    "q5_job_pairs": {
+      "support_vs_independence": "No preference",
+      "recognition_vs_relationships": "No preference",
+      "working_conditions_vs_achievement": "No preference"
+    },
+    "q6_work_setting": {
+      "indoors_outdoors": "No preference",
+      "desk_moving": "No preference"
+    },
+    "q7_working_with_public": "Not sure",
+    "q8_schedule": {
+      "regularity": "No preference",
+      "weekly_hours": "No preference"
+    },
+    "q9_avoid": {
+      "selected_flags": [],
+      "selected_chips": [],
+      "something_else": null
+    },
+    "q10_training": {
+      "max_education": "Not sure yet",
+      "apprenticeship_interest": false,
+      "follow_up": null
+    },
+    "q11_zip_code": null
+  },
+  "filters": {
+    "is_career_query": false,
+    "has_constraint_conflict": false,
+    "interest_tags": [],
+    "work_values": [],
+    "work_context": [],
+    "max_education": null,
+    "job_zone_ceiling": null,
+    "zip_code": null
+  }
+}

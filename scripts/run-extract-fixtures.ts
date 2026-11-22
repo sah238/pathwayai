@@ -4,16 +4,26 @@
  * Makes real Claude API calls (12 Haiku requests). Start it yourself:
  *
  *   npx next dev -p 3002          (with ANTHROPIC_API_KEY in .env.local)
- *   npx tsx scripts/run-extract-fixtures.ts [baseUrl]
+ *   npx tsx scripts/run-extract-fixtures.ts [baseUrl] [--save <dir>]
+ *
+ * --save writes each valid result to <dir>/<id>.json as
+ * { id, quiz_responses, filters }, so matching tests (lib/match) can run on
+ * saved Stage 1 output without calling the API. Invalid results are not saved.
  *
  * Exit code is 1 if any result is not valid filter JSON or an edge case has
  * the wrong flags.
  */
-import { readdirSync, readFileSync } from "node:fs";
+import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { ExtractedFiltersSchema } from "../lib/extract/schema";
 import { EDGE_CASES } from "../lib/extract/test-inputs";
 
-const base = process.argv[2] ?? "http://localhost:3002";
+const args = process.argv.slice(2);
+const saveAt = args.indexOf("--save");
+const saveDir = saveAt >= 0 ? args[saveAt + 1] : undefined;
+if (saveAt >= 0 && !saveDir) throw new Error("--save needs a directory");
+const positional = args.filter((_, i) => saveAt < 0 || (i !== saveAt && i !== saveAt + 1));
+
+const base = positional[0] ?? "http://localhost:3002";
 const url = `${base}/api/extract`;
 const dir = "data/fixtures";
 
@@ -54,6 +64,11 @@ async function main() {
       }
     }
     if (problems.length) failures++;
+    if (saveDir && parsed.success) {
+      mkdirSync(saveDir, { recursive: true });
+      const out = { id: c.id, quiz_responses: c.input, filters: parsed.data };
+      writeFileSync(`${saveDir}/${c.id}.json`, `${JSON.stringify(out, null, 2)}\n`);
+    }
 
     console.log(`\n=== ${c.id}: ${problems.length ? `FAIL (${problems.join("; ")})` : "PASS"}`);
     console.log(JSON.stringify(body, null, 2));

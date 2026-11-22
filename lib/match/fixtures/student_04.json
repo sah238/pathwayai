@@ -1,0 +1,79 @@
+{
+  "id": "student_04",
+  "quiz_responses": {
+    "q1_dream_job": {
+      "has_dream_job": true,
+      "job": "Cybersecurity Analyst",
+      "because": "I like figuring out how systems break and protecting organizations from hackers.",
+      "workday_description": null
+    },
+    "q2_activities": [
+      "Figure out how something works",
+      "Run an experiment",
+      "Plan a budget or keep things organized"
+    ],
+    "q3_asked_for_help": "My parents and teachers ask me to troubleshoot Wi-Fi issues and fix software glitches on their laptops.",
+    "q4_values_most_least": {
+      "most_important": [
+        "Keep learning new skills and discover things no one knows yet",
+        "Good pay and steady work"
+      ],
+      "least_important": "Help people and work with people I like"
+    },
+    "q5_job_pairs": {
+      "support_vs_independence": "You figure out your own way of doing things",
+      "recognition_vs_relationships": "Your work gets noticed and you can move up quickly, but it's competitive",
+      "working_conditions_vs_achievement": "A chance at big results, even if some projects don't work out"
+    },
+    "q6_work_setting": {
+      "indoors_outdoors": "Indoors",
+      "desk_moving": "Sitting at a desk"
+    },
+    "q7_working_with_public": "Very little",
+    "q8_schedule": {
+      "regularity": "The same days and hours every week",
+      "weekly_hours": "More than 40 some weeks is fine"
+    },
+    "q9_avoid": {
+      "selected_flags": [
+        "angry_people",
+        "sales",
+        "temperature"
+      ],
+      "selected_chips": [
+        "Dealing with upset or angry people",
+        "Selling things or meeting sales goals",
+        "Very hot or cold places"
+      ],
+      "something_else": null
+    },
+    "q10_training": {
+      "max_education": "About 4 years",
+      "apprenticeship_interest": false,
+      "follow_up": null
+    },
+    "q11_zip_code": "22030"
+  },
+  "filters": {
+    "is_career_query": true,
+    "has_constraint_conflict": false,
+    "interest_tags": [
+      "I",
+      "R",
+      "C"
+    ],
+    "work_values": [
+      "curiosity",
+      "working_conditions"
+    ],
+    "work_context": [
+      "Indoors",
+      "Desk/Seated",
+      "Standard Schedule",
+      "Overtime Common (>40hr)"
+    ],
+    "max_education": "Bachelor's degree",
+    "job_zone_ceiling": 4,
+    "zip_code": "22030"
+  }
+}
