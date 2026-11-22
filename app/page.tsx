@@ -70,9 +70,14 @@ export default function Home() {
             </ul>
           </div>
 
-          <div aria-hidden="true" className="grid min-w-0 flex-[1_1_400px] grid-cols-2 gap-4">
-            <p className="col-span-2 text-sm font-semibold text-georgetown-gray">Example results</p>
-            <div className="col-span-2 flex flex-col justify-between gap-10 rounded-[22px] bg-bright-blue p-6 text-white">
+          <div
+            aria-hidden="true"
+            className="grid min-w-0 flex-[1_1_424px] grid-cols-1 gap-4 min-[480px]:grid-cols-2"
+          >
+            <p className="text-sm font-semibold text-georgetown-gray min-[480px]:col-span-2">
+              Example results
+            </p>
+            <div className="flex flex-col min-[480px]:col-span-2 justify-between gap-10 rounded-[22px] bg-bright-blue p-6 text-white">
               <span className={`${exampleLabel} text-on-bright-blue`}>Your top match</span>
               <span className="font-display text-[32px] leading-[1.1] font-bold">Electrician</span>
             </div>
