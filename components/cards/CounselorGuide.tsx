@@ -52,7 +52,7 @@ function guideSources(cards: CardViewModel[], zip: ZipStatus, tier: IncomeTier |
 
 function Heading({ n, children }: { n: number; children: string }) {
   return (
-    <h2 className="mt-2 border-b border-black pb-0.5 text-[11pt] font-bold">
+    <h2 className="mt-2 border-b border-georgetown-blue pb-0.5 font-display text-[11pt] font-bold text-georgetown-blue">
       {n}. {children}
     </h2>
   );
@@ -69,7 +69,7 @@ export function CounselorGuide({ cards, zip, tier }: { cards: CardViewModel[]; z
     <div className="hidden bg-white text-[9.5pt] leading-[1.3] text-black print:block" data-guide>
       <style>{PRINT_CSS}</style>
       <header>
-        <h1 className="text-[15pt] font-bold">My career exploration guide</h1>
+        <h1 className="font-display text-[15pt] font-bold text-georgetown-blue">My career exploration guide</h1>
         <p>From PathwayAI. Bring this page to a counselor or talk it over with your family.</p>
       </header>
 
@@ -78,7 +78,7 @@ export function CounselorGuide({ cards, zip, tier }: { cards: CardViewModel[]; z
         {STRENGTHS_PROMPTS.map((p) => (
           <li key={p}>
             {p}
-            <div className="mt-3 border-b border-zinc-500" />
+            <div className="mt-3 border-b border-georgetown-gray" />
           </li>
         ))}
       </ul>
@@ -87,7 +87,7 @@ export function CounselorGuide({ cards, zip, tier }: { cards: CardViewModel[]; z
       <Heading n={2}>My shortlist and what&rsquo;s next</Heading>
       <table className="mt-1 w-full border-collapse text-left align-top">
         <thead>
-          <tr className="border-b border-zinc-400">
+          <tr className="border-b border-georgetown-gray">
             <th className="w-[22%] py-0.5 pr-2">Career</th>
             <th className="w-[16%] py-0.5 pr-2">Median pay / year</th>
             <th className="w-[20%] py-0.5 pr-2">Typical entry education</th>
@@ -99,7 +99,7 @@ export function CounselorGuide({ cards, zip, tier }: { cards: CardViewModel[]; z
             const w = selectWages(c, zip);
             const scope = w.scope === "state" && w.requested_state ? STATE_NAMES[w.requested_state] : "U.S.";
             return (
-              <tr key={c.soc} className="border-b border-zinc-300 align-top">
+              <tr key={c.soc} className="border-b border-light-gray align-top">
                 <td className="py-0.5 pr-2 font-semibold">{c.title.value}</td>
                 <td className="py-0.5 pr-2">
                   {usd.format(w.percentiles.median)} ({scope})
@@ -158,7 +158,7 @@ export function CounselorGuide({ cards, zip, tier }: { cards: CardViewModel[]; z
         estimate. Learn about federal aid at studentaid.gov.
       </p>
 
-      <footer className="mt-2 border-t border-zinc-400 pt-1 text-[7.5pt] leading-tight text-zinc-700">
+      <footer className="mt-2 border-t border-georgetown-gray pt-1 text-[7.5pt] leading-tight text-body">
         <p>
           Pay is a historical average, not a guarantee. Sources:{" "}
           {sources.map((s) => (s.data_vintage ? `${s.source} (${s.data_vintage})` : s.source)).join("; ")}. O*NET

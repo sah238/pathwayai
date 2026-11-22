@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import { pageIntro, pageShell, pageTitle } from "@/components/ui/surface";
 import { getRepository } from "@/lib/data/server";
 import { parseSocs } from "./parse";
 import { ResultsClient } from "./ResultsClient";
@@ -11,9 +12,9 @@ export const metadata: Metadata = {
 
 export default function ResultsPage(props: PageProps<"/results">) {
   return (
-    <main className="mx-auto w-full max-w-6xl px-4 py-6 sm:py-10 print:max-w-none print:p-0">
-      <h1 className="text-2xl font-semibold sm:text-3xl print:hidden">Three careers to explore</h1>
-      <p className="mt-2 max-w-2xl text-zinc-700 print:hidden dark:text-zinc-300">
+    <main className={`${pageShell} print:max-w-none print:p-0`}>
+      <h1 className={`${pageTitle} print:hidden`}>Three careers to explore</h1>
+      <p className={`${pageIntro} mt-3 max-w-2xl print:hidden`}>
         Compare them side by side. Every number comes from public federal data; tap &ldquo;Source&rdquo; to see where.
       </p>
       <div className="mt-6 print:mt-0">
@@ -41,7 +42,7 @@ async function Results({ searchParams }: Pick<PageProps<"/results">, "searchPara
 
 function Problem({ message }: { message: string }) {
   return (
-    <div role="alert" className="rounded-xl border border-amber-300 bg-amber-50 p-4 text-amber-900 dark:border-amber-700 dark:bg-amber-950 dark:text-amber-100">
+    <div role="alert" className="rounded-[20px] border border-warn-line bg-warn-tint p-5 text-warn">
       <p className="font-medium">We couldn&rsquo;t show these careers.</p>
       <p className="mt-1 text-sm">{message}</p>
     </div>

@@ -5,12 +5,12 @@ export function VintageBanner({ sources }: { sources: Source[] }) {
   return (
     <section
       aria-labelledby="vintage-heading"
-      className="rounded-xl border border-zinc-200 bg-zinc-50 p-4 text-sm dark:border-zinc-800 dark:bg-zinc-900"
+      className="rounded-[20px] bg-tint p-5 text-sm"
     >
-      <h2 id="vintage-heading" className="font-semibold">
+      <h2 id="vintage-heading" className="font-display text-lg font-bold text-georgetown-blue">
         Where these numbers come from
       </h2>
-      <ul className="mt-2 space-y-1 text-zinc-700 dark:text-zinc-300">
+      <ul className="mt-2 space-y-1 text-body">
         {sources.map((s) => (
           <li key={`${s.source}|${s.data_vintage}|${s.source_url}`} className="break-words">
             {s.source_url ? (
@@ -25,7 +25,7 @@ export function VintageBanner({ sources }: { sources: Source[] }) {
           </li>
         ))}
       </ul>
-      <p className="mt-2 text-xs text-zinc-600 dark:text-zinc-400">
+      <p className="mt-2 text-xs text-body">
         O*NET content is used under the CC BY 4.0 license (USDOL/ETA).
       </p>
     </section>

@@ -18,6 +18,8 @@ import { STATE_NAMES } from "@/components/cards/format";
 import { GuaranteeNote } from "@/components/cards/GuaranteeNote";
 import { VintageBanner } from "@/components/cards/VintageBanner";
 import { getHandoff } from "@/components/quiz/recommend-store";
+import { buttonStyles } from "@/components/ui/button";
+import { fieldStyles, panel } from "@/components/ui/surface";
 import { INCOME_TIERS, type IncomeTier } from "@/lib/calc/net-price";
 import { OUTSIDE_REGION_ZIP_MESSAGE } from "@/lib/shared-text";
 import { sourcesOnScreen, zipStatus, type ZipStatus } from "./select";
@@ -57,11 +59,11 @@ export function ResultsClient({ cards }: { cards: CardViewModel[] }) {
     <div className="space-y-6 print:hidden">
       <section
         aria-label="Personalize these cards"
-        className="grid gap-4 rounded-xl border border-zinc-200 p-4 sm:grid-cols-2 dark:border-zinc-800"
+        className={`${panel} grid gap-4 sm:grid-cols-2`}
       >
         <div>
           <label htmlFor={zipId} className="block text-sm font-medium">
-            ZIP code <span className="font-normal text-zinc-600 dark:text-zinc-400">(optional, DC, MD or VA)</span>
+            ZIP code <span className="font-normal text-body">(optional, DC, MD or VA)</span>
           </label>
           <input
             id={zipId}
@@ -72,21 +74,21 @@ export function ResultsClient({ cards }: { cards: CardViewModel[] }) {
             value={zip}
             onChange={(e) => setZip(e.target.value)}
             aria-describedby={`${zipId}-msg`}
-            className="mt-1 w-full rounded-lg border border-zinc-400 bg-white px-3 py-2 text-base dark:border-zinc-600 dark:bg-zinc-900"
+            className={`${fieldStyles} mt-1`}
           />
-          <p id={`${zipId}-msg`} aria-live="polite" className="mt-1 text-xs text-zinc-600 dark:text-zinc-400">
+          <p id={`${zipId}-msg`} aria-live="polite" className="mt-1 text-xs text-body">
             {zipMessage(status)}
           </p>
         </div>
         <div>
           <label htmlFor={tierId} className="block text-sm font-medium">
-            Family income <span className="font-normal text-zinc-600 dark:text-zinc-400">(optional, for net price)</span>
+            Family income <span className="font-normal text-body">(optional, for net price)</span>
           </label>
           <select
             id={tierId}
             value={tier ?? ""}
             onChange={(e) => setTier(e.target.value === "" ? null : (Number(e.target.value) as IncomeTier))}
-            className="mt-1 w-full rounded-lg border border-zinc-400 bg-white px-3 py-2 text-base dark:border-zinc-600 dark:bg-zinc-900"
+            className={`${fieldStyles} mt-1`}
           >
             <option value="">Prefer not to say</option>
             {TIERS.map((t) => (
@@ -95,7 +97,7 @@ export function ResultsClient({ cards }: { cards: CardViewModel[] }) {
               </option>
             ))}
           </select>
-          <p className="mt-1 text-xs text-zinc-600 dark:text-zinc-400">
+          <p className="mt-1 text-xs text-body">
             Used only to pick a price bracket. It stays on this page and is never saved or sent.
           </p>
         </div>
@@ -115,15 +117,15 @@ export function ResultsClient({ cards }: { cards: CardViewModel[] }) {
         ))}
       </div>
 
-      <div className="flex flex-wrap items-center gap-3 rounded-xl border border-zinc-200 p-4 dark:border-zinc-800">
+      <div className="flex flex-wrap items-center gap-4 rounded-[20px] bg-highlight p-5">
         <button
           type="button"
           onClick={() => window.print()}
-          className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-semibold text-white hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
+          className={buttonStyles.compact}
         >
           Print counselor guide
         </button>
-        <p className="text-sm text-zinc-600 dark:text-zinc-400">
+        <p className="min-w-0 flex-[1_1_16rem] text-sm text-body">
           A one-page guide with your shortlist, questions to ask, and cost details. Printing happens on your device.
         </p>
       </div>

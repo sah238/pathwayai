@@ -7,7 +7,8 @@
  */
 import Link from "next/link";
 import type { RefObject } from "react";
-import { primaryButton, secondaryButton } from "./buttons";
+import { buttonStyles } from "@/components/ui/button";
+import { pageIntro, pageTitle } from "@/components/ui/surface";
 import type { SubmitOutcome } from "./submit";
 
 export type FinishOutcome = { kind: "loading" } | Exclude<SubmitOutcome, { kind: "cards" }>;
@@ -24,8 +25,8 @@ interface FinishScreenProps {
   onRetry: () => void;
 }
 
-const headingClass = "text-3xl font-bold tracking-tight outline-none";
-const bodyClass = "text-lg text-zinc-700 dark:text-zinc-300";
+const headingClass = pageTitle;
+const bodyClass = pageIntro;
 
 export function FinishScreen({ outcome, headingRef, onBack, onStartOver, onRetry }: FinishScreenProps) {
   switch (outcome.kind) {
@@ -48,10 +49,10 @@ export function FinishScreen({ outcome, headingRef, onBack, onStartOver, onRetry
           </h1>
           <p className={bodyClass}>{outcome.message}</p>
           <div className="flex flex-wrap gap-3">
-            <button type="button" className={primaryButton} onClick={onBack}>
+            <button type="button" className={buttonStyles.compact} onClick={onBack}>
               Back to the quiz
             </button>
-            <button type="button" className={secondaryButton} onClick={onStartOver}>
+            <button type="button" className={buttonStyles.secondary} onClick={onStartOver}>
               Start over
             </button>
           </div>
@@ -67,13 +68,13 @@ export function FinishScreen({ outcome, headingRef, onBack, onStartOver, onRetry
             {ERROR_BODY}
           </p>
           <div className="flex flex-wrap gap-3">
-            <Link href="/browse" className={`${primaryButton} inline-flex items-center`}>
+            <Link href="/browse" className={buttonStyles.compact}>
               Browse careers
             </Link>
-            <button type="button" className={secondaryButton} onClick={onRetry}>
+            <button type="button" className={buttonStyles.secondary} onClick={onRetry}>
               Try again
             </button>
-            <button type="button" className={secondaryButton} onClick={onBack}>
+            <button type="button" className={buttonStyles.secondary} onClick={onBack}>
               Back to my answers
             </button>
           </div>

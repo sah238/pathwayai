@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { VintageBanner } from "@/components/cards/VintageBanner";
+import { buttonStyles } from "@/components/ui/button";
 import type { BrowseData } from "./data";
 import {
   filterCareers,
@@ -18,12 +19,10 @@ import {
 } from "./logic";
 
 const selectClass =
-  "mt-1 block min-h-12 w-full rounded-lg border border-zinc-400 bg-white px-3 text-base " +
-  "focus-visible:outline-2 focus-visible:outline-blue-700 dark:border-zinc-600 dark:bg-zinc-900";
+  "mt-1 block min-h-12 w-full rounded-xl border border-georgetown-gray bg-white px-3 text-base text-georgetown-blue";
 
 const smallButton =
-  "inline-flex min-h-11 items-center rounded-lg px-2 text-sm font-medium underline underline-offset-2 " +
-  "focus-visible:outline-2 focus-visible:outline-blue-700";
+  "inline-flex min-h-11 items-center rounded-lg px-2 text-sm font-medium text-bright-blue underline underline-offset-2 hover:text-georgetown-blue";
 
 export function BrowseClient({ careers, educationOptions, jobZoneOptions, sources }: BrowseData) {
   const [filters, setFilters] = useState<BrowseFilters>(NO_FILTERS);
@@ -37,7 +36,7 @@ export function BrowseClient({ careers, educationOptions, jobZoneOptions, source
   const titleOf = (soc: string) => careers.find((c) => c.soc_code === soc)?.title ?? soc;
 
   return (
-    <div className="pb-64 sm:pb-36 print:pb-0">
+    <div>
       <form aria-label="Filter careers" className="grid gap-3 sm:grid-cols-3" onSubmit={(e) => e.preventDefault()}>
         <label className="text-sm font-medium">
           Education to start
@@ -87,7 +86,7 @@ export function BrowseClient({ careers, educationOptions, jobZoneOptions, source
       </form>
 
       <div className="mt-4 flex min-h-11 items-center justify-between gap-3">
-        <p role="status" className="text-sm text-zinc-700 dark:text-zinc-300">
+        <p role="status" className="text-sm text-body">
           Showing {shown.length} of {careers.length} careers
         </p>
         {hasFilters && (
@@ -98,7 +97,7 @@ export function BrowseClient({ careers, educationOptions, jobZoneOptions, source
       </div>
 
       {shown.length === 0 ? (
-        <p className="mt-2 rounded-xl border border-zinc-300 p-4 dark:border-zinc-700">
+        <p className="mt-2 rounded-[20px] bg-tint p-5">
           No careers match all three filters. Try changing or clearing one.
         </p>
       ) : (
@@ -121,9 +120,9 @@ export function BrowseClient({ careers, educationOptions, jobZoneOptions, source
 
       <section
         aria-label="Your picks"
-        className="fixed inset-x-0 bottom-0 z-10 border-t border-zinc-300 bg-white px-4 py-3 shadow-lg print:hidden dark:border-zinc-700 dark:bg-zinc-950"
+        className="sticky bottom-3 z-10 mt-6 rounded-[20px] border border-light-gray bg-white px-4 py-3 shadow-lg print:hidden"
       >
-        <div className="mx-auto flex max-w-6xl flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div className="min-w-0">
             <p aria-live="polite" className="text-sm font-medium">
               {selected.length} of {MAX_SELECTED} selected
@@ -153,7 +152,7 @@ export function BrowseClient({ careers, educationOptions, jobZoneOptions, source
             <Link
               href={href}
               prefetch={false}
-              className="inline-flex min-h-12 shrink-0 items-center justify-center rounded-lg bg-blue-700 px-5 font-medium text-white hover:bg-blue-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700"
+              className={`${buttonStyles.compact} shrink-0`}
             >
               Compare these 3
             </Link>
@@ -161,7 +160,7 @@ export function BrowseClient({ careers, educationOptions, jobZoneOptions, source
             <button
               type="button"
               disabled
-              className="min-h-12 shrink-0 cursor-not-allowed rounded-lg bg-zinc-200 px-5 font-medium text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300"
+              className={`${buttonStyles.compact} shrink-0`}
             >
               Compare these 3
             </button>
@@ -185,8 +184,8 @@ function CareerOption({
 }) {
   return (
     <li
-      className={`rounded-xl border bg-white p-4 dark:bg-zinc-900 ${
-        checked ? "border-blue-700 dark:border-blue-400" : "border-zinc-300 dark:border-zinc-700"
+      className={`rounded-[20px] border p-5 ${
+        checked ? "border-bright-blue bg-highlight" : "border-light-gray bg-white"
       }`}
     >
       <label className={`flex min-h-11 items-start gap-3 ${disabled ? "cursor-not-allowed" : "cursor-pointer"}`}>
@@ -195,11 +194,11 @@ function CareerOption({
           checked={checked}
           disabled={disabled}
           onChange={onToggle}
-          className="mt-0.5 size-5 shrink-0 accent-blue-700"
+          className="mt-0.5 size-5 shrink-0 scroll-mb-72 accent-bright-blue sm:scroll-mb-40"
         />
-        <span className="min-w-0 font-semibold break-words">{c.title}</span>
+        <span className="min-w-0 font-display text-lg leading-snug font-bold break-words text-georgetown-blue">{c.title}</span>
       </label>
-      <dl className="mt-1 space-y-1 text-sm text-zinc-700 dark:text-zinc-300">
+      <dl className="mt-1 space-y-1 text-sm text-body">
         <div>
           <dt className="inline font-medium">Education: </dt>
           <dd className="inline">{c.entry_education}</dd>
@@ -214,10 +213,10 @@ function CareerOption({
         </div>
       </dl>
       <details className="mt-2 text-sm">
-        <summary className="flex min-h-11 cursor-pointer items-center font-medium underline underline-offset-2">
+        <summary className="flex min-h-11 scroll-mb-72 cursor-pointer items-center font-medium text-bright-blue underline underline-offset-2 sm:scroll-mb-40">
           What they do
         </summary>
-        <p className="text-zinc-700 dark:text-zinc-300">{c.description}</p>
+        <p className="text-body">{c.description}</p>
       </details>
     </li>
   );
