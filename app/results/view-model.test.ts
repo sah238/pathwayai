@@ -97,6 +97,21 @@ describe("factor 4: path and net price", () => {
     expect(c.path.national_route.source).not.toBeNull();
   });
 
+  it("unconfirmed programs never reach the card (filtered in netPricesForOccupation)", () => {
+    const key = (id: string, title: string) => `${id}|${title}`;
+    const withUnconfirmed = repo.listOccupations().filter((o) => o.cip_routing.dmv_providers_unconfirmed.length > 0);
+    expect(withUnconfirmed.map((o) => o.soc_code)).toEqual(
+      expect.arrayContaining(["47-2231", "19-4042", "17-3023", "29-1071"]),
+    );
+    for (const occ of withUnconfirmed) {
+      const { confirmed, unconfirmed } = repo.programsForOccupation(occ.soc_code)!;
+      expect(unconfirmed.length).toBeGreaterThan(0);
+      const onCard = card(occ.soc_code).path.programs.map((p) => key(p.record_id, p.program_title));
+      expect(onCard).toEqual(confirmed.map((p) => key(p.record_id, p.program.title)));
+      for (const u of unconfirmed) expect(onCard).not.toContain(key(u.record_id, u.program.title));
+    }
+  });
+
   it("no tier shows the overall average net price for every school", () => {
     for (const soc of DEMO) {
       for (const p of card(soc).path.programs) {

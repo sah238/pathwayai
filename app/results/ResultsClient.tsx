@@ -34,7 +34,8 @@ export function ResultsClient({ cards }: { cards: CardViewModel[] }) {
   const [tier, setTier] = useState<IncomeTier | null>(null);
   const zipId = useId();
   const tierId = useId();
-  const status = zipStatus(zip);
+  // Keyed on the ZIP string: zipStatus returns a new object each render.
+  const status = useMemo(() => zipStatus(zip), [zip]);
   const sources = useMemo(() => sourcesOnScreen(cards, status, tier), [cards, status, tier]);
 
   return (

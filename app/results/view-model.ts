@@ -79,7 +79,11 @@ export interface CardViewModel {
     training_pathway: Sourced<string>;
     /** True when the typical path is a registered apprenticeship or a local sponsor offers one. */
     apprenticeship_option: boolean;
-    /** Confirmed local programs only (unconfirmed ones are not shown as local options). */
+    /**
+     * Confirmed local programs only. Unconfirmed ones (null completer count)
+     * are filtered upstream: netPricesForOccupation in lib/calc reads only
+     * programsForOccupation(soc).confirmed, so they never reach this list.
+     */
     programs: ProgramView[];
     /** Shown with NO_LOCAL_PROGRAM_BADGE when programs is empty. */
     national_route: Sourced<string[]>;
