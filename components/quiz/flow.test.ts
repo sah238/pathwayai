@@ -85,6 +85,21 @@ describe("quiz → /api/recommend → results", () => {
     expect(url).not.toMatch(/zip|income|tier|surgeon/i);
   });
 
+  it("the request body the client sends has no ZIP", async () => {
+    const f = fixture("student_01");
+    const zip = f.quiz.q11_zip_code!;
+    expect(zip).toMatch(/^\d{5}$/);
+    const { fetchFn, calls } = fetchVia(f);
+    const out = await submitQuiz(f.quiz, fetchFn);
+    expect(out.kind).toBe("cards");
+    expect(calls).toHaveLength(1);
+    const body = String(calls[0][1]?.body);
+    expect(JSON.parse(body).q11_zip_code).toBeNull();
+    expect(body).not.toContain(zip);
+    // The caller's answers are not changed; the handoff still has the ZIP.
+    expect(f.quiz.q11_zip_code).toBe(zip);
+  });
+
   it("ZIP and income never reach the Claude request", async () => {
     const f = fixture("student_01");
     const { fetchFn, create } = fetchVia(f);

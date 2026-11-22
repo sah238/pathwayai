@@ -30,7 +30,9 @@ export async function submitQuiz(
     const res = await fetchFn("/api/recommend", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify(responses),
+      // The server never needs the ZIP: the results page gets it from the
+      // in-memory handoff. The route also clears it (second guard).
+      body: JSON.stringify({ ...responses, q11_zip_code: null }),
       signal: controller.signal,
     });
     if (!res.ok) return { kind: "error" };
